@@ -7,13 +7,12 @@ CREATE TABLE grostl_benchmark (
   git_id VARCHAR(100),
   frequency_MHz INT,
   tree_height BIGINT,
-  batch_size INT,
+  batch_size BIGINT,
   runtime_sec REAL,
   power_Watt REAL,
   chip_temp_C REAL,
-  avg_throughput BIGINT,
+  throughput_GiB_sec REAL,
   msg_size BIGINT,
-  total_input_size BIGINT,
   comment VARCHAR(1024),
   -- relationships
   runs_on INT,
@@ -21,3 +20,5 @@ CREATE TABLE grostl_benchmark (
   uses INT,
   FOREIGN KEY (uses) REFERENCES finite_field (id)
 );
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO guest_user;
