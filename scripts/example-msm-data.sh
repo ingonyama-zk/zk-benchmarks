@@ -1,0 +1,12 @@
+project='ALEO'
+git_id='7918b1c'
+frequency_MHz=250
+vector_size=8192
+coefficient_C=12
+batch_size=1
+runtime_sec='6.25e-5'
+power_Watt='450.0'
+chip_temp_C='0.0'
+comment='ALEO'
+runs_on='RTX 4090'
+uses='BLS12-377'

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  zk-benchmark-db:
+    container_name: zk-benchmark-db
+    image: zk-benchmark-db-image
+    build: .
+    environment:
+      POSTGRES_PASSWORD: ${INGO_BENCHMARKS_DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - zk-benchmark-data:/var/lib/postgresql/data
+    command: postgres -c config_file='/etc/postgresql/postgresql.conf' -c 'hba_file=/etc/postgresql/pg_hba.conf'
+
+volumes:
+  zk-benchmark-data:
+    name: zk-benchmark-data
