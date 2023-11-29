@@ -108,7 +108,7 @@ For example, for `msm`
 
 ### Using Rust's Criterion
 
-The interface changes fast. At this moment, the best way is talk to me (Stas Polonsky) directly.
+The interface changes fast. At this moment, the best way is talk to us directly.
 
 ## Generating reports
 
