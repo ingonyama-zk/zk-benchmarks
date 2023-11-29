@@ -1,12 +1,12 @@
-# Ingonyama Benchmark tool kit
+# Ingonyama Benchmark Toolkit
 
-We maintain an internal SQL database to store the benchmarks we run on our products. Currently we benchmark our solutions for  MSM, Poseidon, NTT, and Modulo Multiplications. 
+We maintain an SQL database to store the benchmarks we run on our products. Currently we benchmark our solutions for  MSM, Poseidon, NTT, and Modulo Multiplications. 
 
-## Who can use the benchmarking tool kit?
+## Who can use the benchmarking toolkit?
 
-The benchmarking tool kit makes it easy to setup and self host a benchmark database. We also offer tool to integrate into your CI/CD and criterion benchmarks recoding of the benchmarks and logging them to the benchmark database.
+The benchmarking toolkit makes it easy to setup and self host a benchmark database. We also offer tool to integrate into your CI/CD and criterion benchmarks recoding of the benchmarks and logging them to the benchmark database.
 
-Developers can use the benchmarking tool kit to fail CI/CD workflows if minimum benchmark requirements are not met, collect historical benchmarking data, compare performance of their system to others and compare libraries one to another.
+Developers can use the benchmarking toolkit to fail CI/CD workflows if minimum benchmark requirements are not met, collect historical benchmarking data, compare performance of their system to others and compare libraries one to another.
 
 Researchers can generate status reports and retrieve performance metrics of different implementations on workloads.
 
