@@ -1,19 +1,54 @@
+#define CURVE_BN254     1
+#define CURVE_BLS12_381 2
+#define CURVE_BLS12_377 3
+
+#define CURVE CURVE_BLS12_377
+
+
+
 #include <stdio.h>
 #include <iostream>
+#include <string>
 #include <cuda_runtime.h>
 #include <nvml.h>
 #include <benchmark/benchmark.h>
 #include "icicle/primitives/field.cuh"
 #include "icicle/utils/storage.cuh"
 #include "icicle/primitives/projective.cuh"
-#include "icicle/curves/bn254/curve_config.cuh"
-#include "ve_mod_mult.cuh"
- 
+
+#if CURVE == CURVE_BN254
+
+#include "icicle/curves/bn254/curve_config.cuh"    
 using namespace BN254;
+const std::string curve = "BN254";
+
+#elif CURVE == CURVE_BLS12_381
+
+#include "icicle/curves/bls12_381/curve_config.cuh"
+using namespace BLS12_381;
+const std::string curve = "BLS12-381";
+
+#elif CURVE == CURVE_BLS12_377
+
+#include "icicle/curves/bls12_377/curve_config.cuh"
+using namespace BLS12_377;
+const std::string curve = "BLS12-377";
+    
+#endif
+
+
+// #ifdef CURVE_BN254
+// #endif
+
+#ifdef CURVE_BLS12_381
+
+#endif
+
+#include "ve_mod_mult.cuh"
 
 typedef projective_t T;
 const unsigned nof_add = 100;
-unsigned nof_elements;
+unsigned nof_elements = 1 << 25;  
 T *vec_a;
 T *vec_b;
 T *d_vec_b;
@@ -33,7 +68,7 @@ static void BM_add(benchmark::State& state) {
   state.counters["Temperature"] = int(temperature);
 }
 
-BENCHMARK(BM_add)->MinTime(30.);
+BENCHMARK(BM_add)->MinTime(60.);
 
 int main(int argc, char** argv) {
   cudaDeviceReset();
@@ -42,21 +77,14 @@ int main(int argc, char** argv) {
   cudaGetDeviceProperties(&deviceProperties, deviceId);
   std::string gpu_full_name = deviceProperties.name;
   std::cout << gpu_full_name << std::endl;
-  std::string gpu_name;
-  if (gpu_full_name.find("3090") != std::string::npos) {
-    gpu_name = "RTX 3090";
-  } else if (gpu_name.find("4090") != std::string::npos) {
-    gpu_name = "RTX 4090";
-  } else {
-        std::cout << "unrecognized GPU" << std::endl;
-  }
+  std::string gpu_name = gpu_full_name;
   int gpu_clock_mhz = deviceProperties.clockRate/1000.;
 
   nvmlInit();
   nvmlDeviceGetHandleByIndex(0, &device);  // for GPU 0
 
   std::cout << "Setting host data" << std::endl;
-  nof_elements = 1 << 25;  
+  
   vec_a = (T*)malloc(sizeof(T) * nof_elements);
   vec_b = (T*)malloc(sizeof(T) * nof_elements);
   for (unsigned i = 0; i < (1 << 10); i++) {
@@ -78,16 +106,18 @@ int main(int argc, char** argv) {
   cudaMemcpy(d_vec_b, vec_b, nof_elements * sizeof(T), cudaMemcpyHostToDevice);
   std::cout << "Running benchmark" << std::endl;
 
-  // Run all benchmarks
+  // Run all benchmarks 
   ::benchmark::Initialize(&argc, argv);
   if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
-  ::benchmark::AddCustomContext("project", "ICICLE");
+  ::benchmark::AddCustomContext("team", "Ingonyama");
+  ::benchmark::AddCustomContext("project", "Icicle");
   ::benchmark::AddCustomContext("runs_on", gpu_name);
   ::benchmark::AddCustomContext("frequency_MHz", std::to_string(gpu_clock_mhz));
-  ::benchmark::AddCustomContext("uses", "BN254");
+  ::benchmark::AddCustomContext("uses", curve);
   ::benchmark::AddCustomContext("comment", "on-device API");
+  ::benchmark::AddCustomContext("operation_factor", std::to_string(nof_add));
+  ::benchmark::AddCustomContext("vector_size", std::to_string(nof_elements));
   ::benchmark::RunSpecifiedBenchmarks();
-
 
   cudaFree(d_vec_a);
   cudaFree(d_vec_b);

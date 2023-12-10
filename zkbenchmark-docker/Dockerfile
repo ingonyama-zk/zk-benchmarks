@@ -1,19 +1,15 @@
 # Temporary stage for conditional copying
-FROM alpine as config-stage
-WORKDIR /config
+# FROM alpine as config-stage
+#WORKDIR /config
 # Try to copy the PostgreSQL config files
 # Use a wildcard to avoid failure if files do not exist
-COPY postgresql.conf* pg_hba.conf* /config/
+# COPY postgresql.conf* pg_hba.conf* /config/
 
 # Main stage: Use the official PostgreSQL image as the base
 FROM postgres:latest
 
-# Copy configuration files from the temporary stage
-# Only the files that exist will be copied
-# COPY --from=config-stage /config/ /var/lib/postgresql/data/
-
 # Set environment variables (optional)
-# ENV POSTGRES_DB=mydb
+# ENV POSTGRES_DB=ingo_benchmarks
 # ENV POSTGRES_USER=myuser
 # ENV POSTGRES_PASSWORD=mypassword
 

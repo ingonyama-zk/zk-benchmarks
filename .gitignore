@@ -2,6 +2,10 @@
 .env
 ingo_benchmarks.sh
 
+# sql
+
+internal.sql/
+
 # CMake
 
 build/

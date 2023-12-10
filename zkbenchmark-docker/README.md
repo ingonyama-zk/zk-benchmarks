@@ -87,8 +87,8 @@ docker-compose down
 To remove the Docker volume and image, use:
 
 ```sh
-docker volume rm zk_benchmark_data
-docker rmi zk-benchmark-db
+docker volume rm zk-benchmark-data
+docker rmi zk-benchmark-db-image
 ```
 
 
