@@ -4,8 +4,6 @@
 
 #define CURVE CURVE_BLS12_377
 
-
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -44,7 +42,34 @@ const std::string curve = "BLS12-377";
 
 #endif
 
-#include "ve_mod_mult.cuh"
+#include "icicle/appUtils/vector_manipulation/ve_mod_mult.cuh"
+
+template <typename E, typename S, int N>
+__global__ void vectorAdd(S *scalar_vec, E *element_vec, E *result, size_t n_elments)
+{
+    int tid = blockDim.x * blockIdx.x + threadIdx.x;
+    if (tid < n_elments)
+    {
+        const S s = scalar_vec[tid];
+        E e = element_vec[tid];
+        // #pragma unroll
+        for (int i = 0; i < N; i++)
+            e = e + s;
+        result[tid] = e;
+    }
+}
+
+template <typename E, typename S, int N = 10>
+int vector_add(E *vec_b, S *vec_a, E *result, size_t n_elments) // TODO: in place so no need for third result vector
+{
+    // Set the grid and block dimensions
+    int num_blocks = (int)ceil((float)n_elments / MAX_THREADS_PER_BLOCK);
+    int threads_per_block = MAX_THREADS_PER_BLOCK;
+
+    // Call the kernel to perform element-wise modular multiplication
+    vectorAdd<E, S, N><<<num_blocks, threads_per_block>>>(vec_a, vec_b, result, n_elments);
+    return 0;
+}
 
 typedef projective_t T;
 const unsigned nof_add = 100;
