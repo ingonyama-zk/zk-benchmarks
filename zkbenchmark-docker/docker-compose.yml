@@ -7,6 +7,7 @@ services:
     build: .
     environment:
       POSTGRES_PASSWORD: ${INGO_BENCHMARKS_DB_PASSWORD}
+      GUEST_PASSWORD: ${INGO_BENCHMARKS_GUEST_USER_PASSWORD}
     ports:
       - "5432:5432"
     volumes:

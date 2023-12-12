@@ -3,14 +3,16 @@
 
 -- Create a guest_user with read-only privileges and no password
 
-CREATE USER guest_user WITH
-    LOGIN -- Allows the user to log in
-    NOSUPERUSER -- Ensures the user is not a superuser
-    NOCREATEDB -- Prevents the user from creating databases
-    NOCREATEROLE -- Prevents the user from creating roles
-    INHERIT -- Allows the user to inherit roles
-    NOREPLICATION -- Prevents the user from replicating data
-    CONNECTION LIMIT -1; -- Sets an unlimited connection limit
+-- CREATE USER guest_user WITH
+--     LOGIN -- Allows the user to log in
+--     NOSUPERUSER -- Ensures the user is not a superuser
+--     NOCREATEDB -- Prevents the user from creating databases
+--     NOCREATEROLE -- Prevents the user from creating roles
+--     INHERIT -- Allows the user to inherit roles
+--     NOREPLICATION -- Prevents the user from replicating data
+--     CONNECTION LIMIT -1; -- Sets an unlimited connection limit
+
+CREATE USER guest_user WITH PASSWORD '$GUEST_PASSWORD';
 
 -- Grant read-only privileges to the user on a specific database 'ingo_benchmarks'
 GRANT CONNECT ON DATABASE ingo_benchmarks TO guest_user;
