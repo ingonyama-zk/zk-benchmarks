@@ -2,7 +2,7 @@
 #define CURVE_BLS12_381 2
 #define CURVE_BLS12_377 3
 
-#define CURVE CURVE_BLS12_377
+#define CURVE CURVE_BN254
 
 #include <stdio.h>
 #include <iostream>
@@ -54,9 +54,11 @@ cudaStream_t stream;
 
 static void BM_msm(benchmark::State& state) {
   const uint32_t msm_size=state.range(0);  
+  bool on_device = true;
+  bool big_triangle = false;
   for (auto _ : state) {
-    large_msm<scalar_t, projective_t, affine_t>(scalars_d, points_d, msm_size, result_d, true, false, bucket_factor, stream);
-    cudaDeviceSynchronize();
+    large_msm<scalar_t, projective_t, affine_t>(scalars_d, points_d, msm_size, result_d, on_device, big_triangle, bucket_factor, stream);
+    // cudaDeviceSynchronize();
   }
   unsigned int power;
   nvmlDeviceGetPowerUsage(device, &power);
