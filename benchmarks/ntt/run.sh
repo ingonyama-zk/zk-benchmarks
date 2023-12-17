@@ -63,7 +63,8 @@ for ((nof_benchmark = 0; nof_benchmark < nof_benchmarks; nof_benchmark++)); do
 
   # Arguments: the complete benchmark name ends with "/"-separated arguments
 
-  vector_size=$(echo "$benchmark_name" | cut -d'/' -f2)
+  #vector_size=$(echo "$benchmark_name" | cut -d'/' -f2)
+  vector_size=$(echo "$benchmark_name" | awk -F'[/""]' '{print 2^$3}')
   echo "Vector size: $vector_size"
     
   runtime_sec=$(echo "$benchmark" | jq '.real_time')
