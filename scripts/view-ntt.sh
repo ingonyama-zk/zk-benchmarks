@@ -1,7 +1,28 @@
 #!/bin/bash
 set -e # Exit immediately if a command exits with a non-zero status
 
-QUERY="SELECT * FROM ntt_benchmark;"
+#QUERY="SELECT * FROM ntt_benchmark;"
+QUERY="SELECT 
+    team,  
+    project,
+    test_timestamp,
+    git_id,
+    frequency_MHz,
+    vector_size,
+    batch_size,
+    runtime_sec,
+    power_Watt,
+    chip_temp_C,
+    comment,
+    hw_platform.device AS device,
+    finite_field.name AS finite_field
+FROM 
+    ntt_benchmark
+JOIN 
+    hw_platform ON ntt_benchmark.runs_on = hw_platform.id
+JOIN 
+    finite_field ON ntt_benchmark.uses = finite_field.id;
+"
 
 ################################
 # Do not modify below this line

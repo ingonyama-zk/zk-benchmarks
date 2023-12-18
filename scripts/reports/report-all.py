@@ -56,7 +56,7 @@ for i,n in enumerate(range(n_min, n_max)):
     ws.cell(row=row_headers+1+i, column=2, value=pow(2,n))
 
 table_name = "msm_benchmark"
-device_types=['RTX 3090','RTX 4090']
+device_types=['NVIDIA GeForce RTX 3090','NVIDIA GeForce RTX 4090']
 
 for j, device_type in enumerate(device_types):
     ws_col=col_headers + 2*j + 1
@@ -165,7 +165,7 @@ for n in range(n_min, n_max):
     ws.cell(row=row_headers+i, column=2, value=pow(2,n))
 
 table_name = "ntt_benchmark"
-device_types=['RTX 3090','RTX 4090']
+device_types=['NVIDIA GeForce RTX 3090','NVIDIA GeForce RTX 4090']
 
 for j, device_type in enumerate(device_types):
     ws_col=col_headers + 2*j + 1

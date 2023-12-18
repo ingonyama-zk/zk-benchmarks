@@ -1,3 +1,8 @@
 ### Report generator 
 
-This script will generate a report on all tables in the benchmark DB
+This script will format a report on all tables into Excel file. From project root directory run:
+
+```sh
+python3 ./scripts/reports/report-all.py
+```
+
