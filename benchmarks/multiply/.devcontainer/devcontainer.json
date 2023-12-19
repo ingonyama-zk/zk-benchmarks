@@ -1,0 +1,25 @@
+{
+    "name": "Icicle Benchmarks - multiply",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder}/.,target=/icicle-benchmark,type=bind",
+    "workspaceFolder": "/icicle-benchmark",
+    "runArgs": [
+        "--gpus",
+        "all"
+    ],
+    "postCreateCommand": [
+        "nvidia-smi"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cmake-tools",
+				"ms-python.python",
+				"ms-azuretools.vscode-docker",
+				"ms-vscode.cpptools-extension-pack"
+			]
+		}
+	}
+}
