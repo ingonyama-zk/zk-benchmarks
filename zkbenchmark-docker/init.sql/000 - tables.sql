@@ -30,19 +30,27 @@ VALUES
   ('BLS12-381')
 ;
 
+
+CREATE TYPE multiply_type AS ENUM ('scalar', 'point_field');
+
 CREATE TABLE multiply_benchmark (
   id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  multiply multiply_type,
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   vector_size BIGINT,
+  operation_factor BIGINT,
   batch_size INT,
   runtime_sec REAL,
   power_Watt REAL,
   chip_temp_C REAL,
   comment VARCHAR(1024),
+  -- computed: operations per second
+  ops REAL GENERATED ALWAYS AS ( operation_factor * vector_size / runtime_sec ) STORED,
   -- relationships
   runs_on INT,
   FOREIGN KEY (runs_on) REFERENCES hw_platform (id),
@@ -55,6 +63,7 @@ CREATE TABLE add_benchmark (
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   vector_size BIGINT,
@@ -78,6 +87,7 @@ CREATE TABLE msm_benchmark (
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   vector_size BIGINT,
@@ -99,6 +109,7 @@ CREATE TABLE ntt_benchmark (
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   vector_size BIGINT,
@@ -120,6 +131,7 @@ CREATE TABLE poseidon_benchmark (
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   tree_height BIGINT,
@@ -140,6 +152,7 @@ CREATE TABLE grostl_benchmark (
   team VARCHAR(1024),
   project VARCHAR(1024),
   test_timestamp TIMESTAMP,
+  git_repository VARCHAR(1024),
   git_id VARCHAR(100),
   frequency_MHz INT,
   tree_height BIGINT,
