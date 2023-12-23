@@ -3,7 +3,8 @@
 ingo_benchmarks.sh
 
 # sql
-
+benchmark.json
+benchmark.sql
 internal.sql/
 
 # CMake

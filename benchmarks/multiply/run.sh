@@ -15,7 +15,7 @@ git_id=$(cd /icicle && git rev-parse --short HEAD)
 echo "Icicle GitID: $git_id"
 
 echo "Running the benchmarks and capturing the output in the file benchmark.json"
-/icicle-benchmark/build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
+#/icicle-benchmark/build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
 
 json_data=$(<benchmark.json)
 #echo $json_data
@@ -27,6 +27,12 @@ echo "Team: $team"
 
 project=$(jq -r '.context.project' benchmark.json)
 echo "Project: $project"
+
+git_repository=$(jq -r '.context.git_repository' benchmark.json)
+echo "Git repository: $git_repository"
+
+multiply=$(jq -r '.context.multiply' benchmark.json)
+echo "Multiply: $multiply"
 
 runs_on=$(jq -r '.context.runs_on' benchmark.json)
 echo "Runs on: $runs_on"
@@ -78,11 +84,13 @@ for ((nof_benchmark = 0; nof_benchmark < nof_benchmarks; nof_benchmark++)); do
 
   chip_temp_C=$(echo "$benchmark" | jq '.Temperature')
   echo "Chip temperature (C): $chip_temp_C"
-
-  QUERY="INSERT INTO add_benchmark (
+  
+  QUERY="INSERT INTO multiply_benchmark (
   team,
   project,
+  multiply,
   test_timestamp,
+  git_repository,
   git_id,
   frequency_MHz,
   vector_size,
@@ -98,7 +106,9 @@ for ((nof_benchmark = 0; nof_benchmark < nof_benchmarks; nof_benchmark++)); do
 VALUES (
   '$team',
   '$project',
+  '$multiply',
   '$test_timestamp',
+  '$git_repository',
   '$git_id',
   $frequency_MHz,
   $vector_size,
