@@ -15,3 +15,8 @@ jobs:
     # Add steps for your manual job
     - name: Run a command
       run: echo "Running on self-hosted runner"
+    - name: Execute Script
+      run: |
+        chmod +x ./benchmarks/run-all-benchmarks.sh
+        ./benchmarks/run-all-benchmarks.sh
+
