@@ -23,6 +23,7 @@ jobs:
       run: echo "Running on self-hosted runner"
     - name: Execute Script
       run: |
+        pwd
         chmod +x ./benchmarks/run-all-benchmarks.sh
         ./benchmarks/run-all-benchmarks.sh
 
