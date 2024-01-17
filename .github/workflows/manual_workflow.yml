@@ -6,22 +6,24 @@ on:
 jobs:
   manual-job:
     runs-on: self-hosted
+
     env:
       TEST_SECRET: ${{ secrets.MY_TEST_SECRET }}  
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
+
     steps:
-    
     - name: Clone Icicle
       uses: actions/checkout@v2
       with:
         repository: ingonyama-zk/icicle
         # path: /icicle
+
     - name: Checkout repository
       uses: actions/checkout@v2
-    # Add steps for your manual job
 
-    - name: Run a command
-      run: echo "Running on self-hosted runner"
+    - name: list files
+      run: ls .. -la
+
     - name: Execute Script
       run: |
         pwd
