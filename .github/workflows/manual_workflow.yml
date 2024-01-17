@@ -13,13 +13,13 @@ jobs:
 
     steps:
     - name: Clone Icicle
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
       with:
         repository: ingonyama-zk/icicle
         # path: /icicle
 
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: List Icicle contents
       run: ls -la
@@ -30,6 +30,7 @@ jobs:
     - name: Execute Script
       run: |
         pwd
+        echo "GITHUB_WORKSPACE $GITHUB_WORKSPACE"
         ls -la
         chmod +x ./benchmarks/run-all-benchmarks.sh
         ./benchmarks/run-all-benchmarks.sh
