@@ -27,6 +27,7 @@ jobs:
     - name: Execute Script
       run: |
         pwd
+        ls -la
         chmod +x ./benchmarks/run-all-benchmarks.sh
         ./benchmarks/run-all-benchmarks.sh
 
