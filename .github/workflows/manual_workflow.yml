@@ -16,12 +16,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: ingonyama-zk/icicle
-        path: ../icicle
+        path: icicle
 
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        path: main
 
-    - name: List Icicle contents
+    - name: List work directory contents
       run: ls -la
 
     - name: list files
@@ -29,6 +31,7 @@ jobs:
 
     - name: Execute Script
       run: |
+        cd main
         pwd
         echo "GITHUB_WORKSPACE $GITHUB_WORKSPACE"
         ls -la
