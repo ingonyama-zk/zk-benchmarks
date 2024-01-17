@@ -1,25 +1,13 @@
-// #define CURVE_BN254     1
-// #define CURVE_BLS12_381 2
-// #define CURVE_BLS12_377 3
-
-// #define CURVE_ID CURVE_BN254
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
-// #include <cuda_runtime.h>
 #include <nvml.h>
 #include <benchmark/benchmark.h>
-// #include "icicle/primitives/field.cuh"
-// #include "icicle/utils/storage.cuh"
-// #include "icicle/primitives/projective.cuh"
-
 
 // select the curve
 #define CURVE_ID 1
-
 // include MSM template
-#include "icicle/appUtils/msm/msm.cu"
+#include "/opt/icicle/icicle/appUtils/msm/msm.cu"
 using namespace curve_config;
 
 #if CURVE_ID == BN254
@@ -115,18 +103,12 @@ int main(int argc, char** argv) {
   scalar_t::RandHostMany(scalars, max_msm_size);
   projective_t::RandHostManyAffine(points, max_msm_size);
 
-  // for (unsigned i = 0; i < max_msm_size; i++) {
-  //   points[i] = (i % max_msm_size < 10) ? projective_t::to_affine(projective_t::rand_host()) : points[i - 10];
-  //   scalars[i] = scalar_t::rand_host();
-  // }
-
   std::cout << "Moving data to device" << std::endl;
   cudaMalloc(&scalars_d, sizeof(scalar_t) * max_msm_size);
   cudaMalloc(&points_d, sizeof(affine_t) * max_msm_size);
   cudaMalloc(&result_d, sizeof(projective_t));
   cudaMemcpy(scalars_d, scalars, sizeof(scalar_t) * max_msm_size, cudaMemcpyHostToDevice);
   cudaMemcpy(points_d, points, sizeof(affine_t) * max_msm_size, cudaMemcpyHostToDevice);
-
 
   std::cout << "Running benchmark" << std::endl;
   cudaStreamCreate(&stream);

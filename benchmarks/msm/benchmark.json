@@ -1,8 +1,8 @@
 {
   "context": {
-    "date": "2024-01-10T18:31:05+00:00",
-    "host_name": "9bb077e68cdf",
-    "executable": "/icicle-benchmark/build/benchmark",
+    "date": "2024-01-17T16:37:43-05:00",
+    "host_name": "ubuntu1",
+    "executable": "./build/benchmark",
     "num_cpus": 12,
     "mhz_per_cpu": 4208,
     "cpu_scaling_enabled": true,
@@ -32,7 +32,7 @@
         "num_sharing": 6
       }
     ],
-    "load_avg": [1.67236,1.54883,1.26611],
+    "load_avg": [0.740723,0.775391,0.859375],
     "library_build_type": "release",
     "coefficient_C": "12",
     "comment": "on-device API",
@@ -52,12 +52,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3850,
-      "real_time": 1.0958126205981213e-02,
-      "cpu_time": 1.0935583719740259e-02,
+      "iterations": 3963,
+      "real_time": 1.0644322619478517e-02,
+      "cpu_time": 1.0639513527882916e-02,
       "time_unit": "s",
-      "PowerUsage": 1.8300000000000000e+02,
-      "Temperature": 6.0000000000000000e+01
+      "PowerUsage": 1.7400000000000000e+02,
+      "Temperature": 5.0000000000000000e+01
     },
     {
       "name": "BM_msm/2048/min_time:30.000",
@@ -68,12 +68,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3833,
-      "real_time": 1.0995332787121713e-02,
-      "cpu_time": 1.0964406394469089e-02,
+      "iterations": 3972,
+      "real_time": 1.0574733940844610e-02,
+      "cpu_time": 1.0572296530966767e-02,
       "time_unit": "s",
-      "PowerUsage": 1.8700000000000000e+02,
-      "Temperature": 6.3000000000000000e+01
+      "PowerUsage": 1.7800000000000000e+02,
+      "Temperature": 5.4000000000000000e+01
     },
     {
       "name": "BM_msm/4096/min_time:30.000",
@@ -84,12 +84,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3837,
-      "real_time": 1.1030317013532288e-02,
-      "cpu_time": 1.1005096382851187e-02,
+      "iterations": 3952,
+      "real_time": 1.0681443654593677e-02,
+      "cpu_time": 1.0679052846912954e-02,
       "time_unit": "s",
-      "PowerUsage": 1.8900000000000000e+02,
-      "Temperature": 6.4000000000000000e+01
+      "PowerUsage": 1.8000000000000000e+02,
+      "Temperature": 5.7000000000000000e+01
     },
     {
       "name": "BM_msm/8192/min_time:30.000",
@@ -100,12 +100,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3520,
-      "real_time": 1.1957617815344499e-02,
-      "cpu_time": 1.1933407338352272e-02,
+      "iterations": 3720,
+      "real_time": 1.1294526970439580e-02,
+      "cpu_time": 1.1291999970698926e-02,
       "time_unit": "s",
-      "PowerUsage": 1.9000000000000000e+02,
-      "Temperature": 6.5000000000000000e+01
+      "PowerUsage": 1.8300000000000000e+02,
+      "Temperature": 5.9000000000000000e+01
     },
     {
       "name": "BM_msm/16384/min_time:30.000",
@@ -116,12 +116,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3508,
-      "real_time": 1.1985734673315169e-02,
-      "cpu_time": 1.1963134809293039e-02,
+      "iterations": 3697,
+      "real_time": 1.1362156358705962e-02,
+      "cpu_time": 1.1359187060048681e-02,
       "time_unit": "s",
-      "PowerUsage": 1.9400000000000000e+02,
-      "Temperature": 6.5000000000000000e+01
+      "PowerUsage": 1.8900000000000000e+02,
+      "Temperature": 6.1000000000000000e+01
     },
     {
       "name": "BM_msm/32768/min_time:30.000",
@@ -132,12 +132,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3497,
-      "real_time": 1.2017841417779722e-02,
-      "cpu_time": 1.1998319173863311e-02,
+      "iterations": 3676,
+      "real_time": 1.1419239658299911e-02,
+      "cpu_time": 1.1416416877312310e-02,
       "time_unit": "s",
-      "PowerUsage": 2.0000000000000000e+02,
-      "Temperature": 6.6000000000000000e+01
+      "PowerUsage": 1.9600000000000000e+02,
+      "Temperature": 6.3000000000000000e+01
     },
     {
       "name": "BM_msm/65536/min_time:30.000",
@@ -148,12 +148,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3199,
-      "real_time": 1.3154686054723730e-02,
-      "cpu_time": 1.3129190219443565e-02,
+      "iterations": 3365,
+      "real_time": 1.2495923161099804e-02,
+      "cpu_time": 1.2493138238038630e-02,
       "time_unit": "s",
-      "PowerUsage": 2.0600000000000000e+02,
-      "Temperature": 6.7000000000000000e+01
+      "PowerUsage": 2.0400000000000000e+02,
+      "Temperature": 6.5000000000000000e+01
     },
     {
       "name": "BM_msm/131072/min_time:30.000",
@@ -164,12 +164,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 3068,
-      "real_time": 1.3715011163613476e-02,
-      "cpu_time": 1.3691055463168176e-02,
+      "iterations": 3219,
+      "real_time": 1.3055480130519643e-02,
+      "cpu_time": 1.3052239254737492e-02,
       "time_unit": "s",
-      "PowerUsage": 2.1700000000000000e+02,
-      "Temperature": 6.7000000000000000e+01
+      "PowerUsage": 2.1600000000000000e+02,
+      "Temperature": 6.6000000000000000e+01
     },
     {
       "name": "BM_msm/262144/min_time:30.000",
@@ -180,12 +180,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2720,
-      "real_time": 1.5460519887881888e-02,
-      "cpu_time": 1.5432111724264697e-02,
+      "iterations": 2864,
+      "real_time": 1.4664847221012181e-02,
+      "cpu_time": 1.4662534109986039e-02,
       "time_unit": "s",
       "PowerUsage": 2.3500000000000000e+02,
-      "Temperature": 6.9000000000000000e+01
+      "Temperature": 6.8000000000000000e+01
     },
     {
       "name": "BM_msm/524288/min_time:30.000",
@@ -196,12 +196,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 2239,
-      "real_time": 1.8804006550705219e-02,
-      "cpu_time": 1.8765309853059419e-02,
+      "iterations": 2417,
+      "real_time": 1.7464559799793108e-02,
+      "cpu_time": 1.7462714994207713e-02,
       "time_unit": "s",
-      "PowerUsage": 2.6000000000000000e+02,
-      "Temperature": 7.1000000000000000e+01
+      "PowerUsage": 2.6200000000000000e+02,
+      "Temperature": 7.0000000000000000e+01
     },
     {
       "name": "BM_msm/1048576/min_time:30.000",
@@ -212,11 +212,11 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 1633,
-      "real_time": 2.5804960957143186e-02,
-      "cpu_time": 2.5770517832823046e-02,
+      "iterations": 1774,
+      "real_time": 2.3669974564227120e-02,
+      "cpu_time": 2.3666332790868105e-02,
       "time_unit": "s",
-      "PowerUsage": 2.9200000000000000e+02,
+      "PowerUsage": 2.9700000000000000e+02,
       "Temperature": 7.2000000000000000e+01
     },
     {
@@ -228,12 +228,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 1052,
-      "real_time": 3.9985827347923233e-02,
-      "cpu_time": 3.9931135256654024e-02,
+      "iterations": 1155,
+      "real_time": 3.6347849296962283e-02,
+      "cpu_time": 3.6331080806060630e-02,
       "time_unit": "s",
-      "PowerUsage": 2.9500000000000000e+02,
-      "Temperature": 6.7000000000000000e+01
+      "PowerUsage": 2.9300000000000000e+02,
+      "Temperature": 6.9000000000000000e+01
     },
     {
       "name": "BM_msm/4194304/min_time:30.000",
@@ -244,12 +244,12 @@
       "repetitions": 1,
       "repetition_index": 0,
       "threads": 1,
-      "iterations": 612,
-      "real_time": 6.8616608176585839e-02,
-      "cpu_time": 6.8533704723856226e-02,
+      "iterations": 668,
+      "real_time": 6.2798638776862092e-02,
+      "cpu_time": 6.2748908369760464e-02,
       "time_unit": "s",
-      "PowerUsage": 2.9400000000000000e+02,
-      "Temperature": 6.5000000000000000e+01
+      "PowerUsage": 2.9900000000000000e+02,
+      "Temperature": 6.7000000000000000e+01
     }
   ]
 }

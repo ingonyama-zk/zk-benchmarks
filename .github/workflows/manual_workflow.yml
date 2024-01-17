@@ -40,7 +40,7 @@ jobs:
 
     - name: Benchmark add operation
       run: |
-        git config --global --add safe.directory /opt/icicle
+        # git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/add
         ./compile.sh
         ./run.sh
@@ -48,8 +48,17 @@ jobs:
 
     - name: Benchmark multiply operation
       run: |
-        git config --global --add safe.directory /opt/icicle
+        # git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/multiply
+        ./compile.sh
+        ./run.sh
+        cat ./benchmark.sql
+
+
+    - name: Benchmark MSM operation
+      run: |
+        # git config --global --add safe.directory /opt/icicle
+        cd ./benchmarks/msm
         ./compile.sh
         ./run.sh
         cat ./benchmark.sql
