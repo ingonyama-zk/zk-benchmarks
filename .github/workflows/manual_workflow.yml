@@ -10,13 +10,14 @@ jobs:
       TEST_SECRET: ${{ secrets.MY_TEST_SECRET }}  
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    
     - name: Clone Icicle
       uses: actions/checkout@v2
       with:
         repository: ingonyama-zk/icicle
-        path: /icicle
+        # path: /icicle
+    - name: Checkout repository
+      uses: actions/checkout@v2
     # Add steps for your manual job
 
     - name: Run a command
