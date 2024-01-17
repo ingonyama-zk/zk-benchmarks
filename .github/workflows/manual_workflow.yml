@@ -21,6 +21,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: List Icicle contents
+      run: ls icicle -la
+
     - name: list files
       run: ls .. -la
 
