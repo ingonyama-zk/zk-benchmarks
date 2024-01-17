@@ -1,48 +1,23 @@
-#define CURVE_BN254     1
-#define CURVE_BLS12_381 2
-#define CURVE_BLS12_377 3
-
-#define CURVE CURVE_BLS12_377
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
 #include <cuda_runtime.h>
 #include <nvml.h>
 #include <benchmark/benchmark.h>
-#include "icicle/primitives/field.cuh"
-#include "icicle/utils/storage.cuh"
-#include "icicle/primitives/projective.cuh"
 
-#if CURVE == CURVE_BN254
+#define CURVE_ID 1
+#include "/opt/icicle/icicle/curves/curve_config.cuh"
+using namespace curve_config;
 
-#include "icicle/curves/bn254/curve_config.cuh"    
-using namespace BN254;
+#define MAX_THREADS_PER_BLOCK 256
+
+#if CURVE_ID == BN254
 const std::string curve = "BN254";
-
-#elif CURVE == CURVE_BLS12_381
-
-#include "icicle/curves/bls12_381/curve_config.cuh"
-using namespace BLS12_381;
+#elif CURVE_ID == BLS12_381
 const std::string curve = "BLS12-381";
-
-#elif CURVE == CURVE_BLS12_377
-
-#include "icicle/curves/bls12_377/curve_config.cuh"
-using namespace BLS12_377;
+#elif CURVE_ID == BLS12_377
 const std::string curve = "BLS12-377";
-    
 #endif
-
-
-// #ifdef CURVE_BN254
-// #endif
-
-#ifdef CURVE_BLS12_381
-
-#endif
-
-#include "icicle/appUtils/vector_manipulation/ve_mod_mult.cuh"
 
 template <typename E, typename S, int N>
 __global__ void vectorAdd(S *scalar_vec, E *element_vec, E *result, size_t n_elments)
@@ -52,7 +27,6 @@ __global__ void vectorAdd(S *scalar_vec, E *element_vec, E *result, size_t n_elm
     {
         const S s = scalar_vec[tid];
         E e = element_vec[tid];
-        // #pragma unroll
         for (int i = 0; i < N; i++)
             e = e + s;
         result[tid] = e;

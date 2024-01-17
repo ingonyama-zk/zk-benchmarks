@@ -12,29 +12,36 @@ jobs:
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
 
     steps:
-    - name: Clone Icicle
-      uses: actions/checkout@v4
-      with:
-        repository: ingonyama-zk/icicle
-        path: icicle
+    # - name: Clone Icicle
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: ingonyama-zk/icicle
+    #     path: icicle
 
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        path: main
+      # with:
+      #   path: main
 
-    - name: List work directory contents
-      run: ls -la
-
-    - name: list files
-      run: ls .. -la
+    - name: Print context
+      run: |
+        echo "GITHUB_WORKSPACE $GITHUB_WORKSPACE"
+        echo "GITHUB_REPOSITORY $GITHUB_REPOSITORY"
+        echo "GITHUB_ACTOR $GITHUB_ACTOR"
+        echo "Workflow $GITHUB_WORKFLOW"
+        ls -la
 
     - name: Execute Script
       run: |
-        cd main
+        # cd main
         pwd
-        echo "GITHUB_WORKSPACE $GITHUB_WORKSPACE"
-        ls -la
         chmod +x ./benchmarks/run-all-benchmarks.sh
         ./benchmarks/run-all-benchmarks.sh
+
+    - name: Benchmark add operation
+      run: |
+        cd ./benchmarks/add
+        ./compile.sh
+        ./run.sh
+        cat ./benchmark.sql
 

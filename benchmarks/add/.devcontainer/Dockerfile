@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 # apt-get install cuda-nsight-systems-12-2
 
 # Clone Icicle from a GitHub repository
-RUN git clone https://github.com/ingonyama-zk/icicle.git  /icicle
+RUN git clone https://github.com/ingonyama-zk/icicle.git  /opt/icicle
 
 # Benchmarking in C++
 RUN git clone https://github.com/google/benchmark.git /opt/benchmark \
