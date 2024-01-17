@@ -1,8 +1,8 @@
-#define CURVE_BN254     1
-#define CURVE_BLS12_381 2
-#define CURVE_BLS12_377 3
+// #define CURVE_BN254     1
+// #define CURVE_BLS12_381 2
+// #define CURVE_BLS12_377 3
 
-#define CURVE CURVE_BLS12_377
+// #define CURVE CURVE_BLS12_377
 
 #include <stdio.h>
 #include <iostream>
@@ -10,22 +10,36 @@
 #include <cuda_runtime.h>
 #include <nvml.h>
 #include </opt/benchmark/include/benchmark/benchmark.h>
-#include "/icicle/icicle/primitives/field.cuh"
-#include "/icicle/icicle/curves/bn254_params.cuh"
-#include "/icicle/icicle/curves/bls12_381_params.cuh"
-#include "/icicle/icicle/curves/bls12_377_params.cuh"
-#include "/icicle/icicle/curves/bw6_761_params.cuh"
-typedef Field<bn254::fp_config> bn254_scalar_t;
-typedef Field<bn254::fq_config> bn254_point_field_t;
-typedef Field<bls12_381::fp_config> bls12_381_scalar_t;
-typedef Field<bls12_381::fq_config> bls12_381_point_field_t;
-typedef Field<bls12_377::fp_config> bls12_377_scalar_t;
-typedef Field<bls12_377::fq_config> bls12_377_point_field_t;
+
+#define CURVE_ID 1
+#include "/opt/icicle/icicle/curves/curve_config.cuh"
+using namespace curve_config;
+
+
+
+// #include "/icicle/icicle/primitives/field.cuh"
+// #include "/icicle/icicle/curves/bn254_params.cuh"
+// #include "/icicle/icicle/curves/bls12_381_params.cuh"
+// #include "/icicle/icicle/curves/bls12_377_params.cuh"
+// #include "/icicle/icicle/curves/bw6_761_params.cuh"
+// typedef Field<bn254::fp_config> bn254_scalar_t;
+// typedef Field<bn254::fq_config> bn254_point_field_t;
+// typedef Field<bls12_381::fp_config> bls12_381_scalar_t;
+// typedef Field<bls12_381::fq_config> bls12_381_point_field_t;
+// typedef Field<bls12_377::fp_config> bls12_377_scalar_t;
+// typedef Field<bls12_377::fq_config> bls12_377_point_field_t;
 // typedef Field<bw6_761::fp_config> bw6_761_scalar_t;
 
 
 // const std::string curve = "BLS12-377";
 
+#if CURVE_ID == BN254
+const std::string curve = "BN254";
+#elif CURVE_ID == BLS12_381
+const std::string curve = "BLS12-381";
+#elif CURVE_ID == BLS12_377
+const std::string curve = "BLS12-377";
+#endif
 
 
 #define MAX_THREADS_PER_BLOCK 256
@@ -57,9 +71,15 @@ int vector_mult(S *vec_b, S *vec_a, S *vec_result, size_t n_elments)
   return 0;
 }
 
+// select element type
+#define ELEMENT 1
+#if ELEMENT == 0
+const std::string multiply_type="scalar";
+typedef scalar_t S;
+#elif ELEMENT == 1
 const std::string multiply_type="point_field";
-typedef bls12_377_scalar_t S;
-//typedef point_field_t S;
+typedef point_field_t S;
+#endif
 
 const unsigned nof_mult = 100;
 unsigned nof_elements = 1 << 25;  
@@ -137,25 +157,25 @@ class MyTemplatedFixture : public benchmark::Fixture {
 };
 
 // bn254
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test1, bn254_scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test1)->Name("BN254:scalar")->MinTime(30.)->Arg(nof_elements);
+BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test1, scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+BENCHMARK_REGISTER_F(MyTemplatedFixture, Test1)->Name("scalar")->MinTime(30.)->Arg(nof_elements);
 
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test2, bn254_point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test2)->Name("BN254:point_field")->MinTime(30.)->Arg(nof_elements);
+BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test2, point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+BENCHMARK_REGISTER_F(MyTemplatedFixture, Test2)->Name("point_field")->MinTime(30.)->Arg(nof_elements);
 
 // bls12_381
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test3, bls12_381_scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test3)->Name("BLS12_381:scalar")->MinTime(30.)->Arg(nof_elements);
+// BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test3, bls12_381_scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+// BENCHMARK_REGISTER_F(MyTemplatedFixture, Test3)->Name("BLS12_381:scalar")->MinTime(30.)->Arg(nof_elements);
 
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test4, bls12_381_point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test4)->Name("BLS12_381:point_field")->MinTime(30.)->Arg(nof_elements);
+// BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test4, bls12_381_point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+// BENCHMARK_REGISTER_F(MyTemplatedFixture, Test4)->Name("BLS12_381:point_field")->MinTime(30.)->Arg(nof_elements);
 
 // bls12_377
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test5, bls12_377_scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test5)->Name("BLS12_377:scalar")->MinTime(30.)->Arg(nof_elements);
+// BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test5, bls12_377_scalar_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+// BENCHMARK_REGISTER_F(MyTemplatedFixture, Test5)->Name("BLS12_377:scalar")->MinTime(30.)->Arg(nof_elements);
 
-BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test6, bls12_377_point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
-BENCHMARK_REGISTER_F(MyTemplatedFixture, Test6)->Name("BLS12_377:point_field")->MinTime(30.)->Arg(nof_elements);
+// BENCHMARK_TEMPLATE_DEFINE_F(MyTemplatedFixture, Test6, bls12_377_point_field_t)(benchmark::State& state){MyTemplatedFixture::BenchmarkCase(state);}
+// BENCHMARK_REGISTER_F(MyTemplatedFixture, Test6)->Name("BLS12_377:point_field")->MinTime(30.)->Arg(nof_elements);
 
 
 int main(int argc, char** argv) {
@@ -179,7 +199,7 @@ int main(int argc, char** argv) {
   ::benchmark::AddCustomContext("project", "Icicle");
   ::benchmark::AddCustomContext("runs_on", gpu_name);
   ::benchmark::AddCustomContext("frequency_MHz", std::to_string(gpu_clock_mhz));
-  // ::benchmark::AddCustomContext("uses", curve);
+  ::benchmark::AddCustomContext("uses", curve);
   ::benchmark::AddCustomContext("comment", "on-device API");
   ::benchmark::AddCustomContext("operation_factor", std::to_string(nof_mult));
   ::benchmark::AddCustomContext("vector_size", std::to_string(nof_elements));

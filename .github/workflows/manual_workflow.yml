@@ -46,3 +46,10 @@ jobs:
         ./run.sh
         cat ./benchmark.sql
 
+    - name: Benchmark multiply operation
+      run: |
+        git config --global --add safe.directory /opt/icicle
+        cd ./benchmarks/multiply
+        ./compile.sh
+        ./run.sh
+        cat ./benchmark.sql

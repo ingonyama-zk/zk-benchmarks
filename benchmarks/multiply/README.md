@@ -18,5 +18,3 @@ Inside the container,
 ./compile.sh
 ./run.sh
 ```
-
-
