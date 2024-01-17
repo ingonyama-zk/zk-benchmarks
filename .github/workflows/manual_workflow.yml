@@ -40,6 +40,7 @@ jobs:
 
     - name: Benchmark add operation
       run: |
+        git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/add
         ./compile.sh
         ./run.sh
