@@ -12,11 +12,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    # - name: Clone Icicle
-    #   uses: actions/checkout@v2
-    #   with:
-    #     repository: ingonyama-zk/icicle
-        # path: /icicle
+    - name: Clone Icicle
+      uses: actions/checkout@v2
+      with:
+        repository: ingonyama-zk/icicle
+        path: /icicle
     # Add steps for your manual job
 
     - name: Run a command
