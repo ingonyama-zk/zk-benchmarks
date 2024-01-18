@@ -1,38 +1,23 @@
-#define CURVE_BN254     1
-#define CURVE_BLS12_381 2
-#define CURVE_BLS12_377 3
-
-
-// CURVE_BLS12_381 seems to be hardcoded in some ntt, at least in dev branch
-#define CURVE CURVE_BLS12_381
-
 #include <stdio.h>
 #include <iostream>
 #include <string>
-#include <cuda_runtime.h>
 #include <nvml.h>
 #include <benchmark/benchmark.h>
-#include "icicle/appUtils/ntt/ntt.cuh"
 
-#if CURVE == CURVE_BN254
+// select the curve
+#define CURVE_ID 1
+// include NTT template
+#include "/opt/icicle/icicle/appUtils/ntt/ntt.cu"
+using namespace curve_config;
 
-#include "icicle/curves/bn254/curve_config.cuh"    
-using namespace BN254;
+#if CURVE_ID == BN254
 const std::string curve = "BN254";
-
-#elif CURVE == CURVE_BLS12_381
-
-#include "icicle/curves/bls12_381/curve_config.cuh"
-using namespace BLS12_381;
+#elif CURVE_ID == BLS12_381
 const std::string curve = "BLS12-381";
-
-#elif CURVE == CURVE_BLS12_377
-
-#include "icicle/curves/bls12_377/curve_config.cuh"
-using namespace BLS12_377;
+#elif CURVE_ID == BLS12_377
 const std::string curve = "BLS12-377";
-    
 #endif
+
 
 // Operate on scalars
 typedef scalar_t S;
@@ -51,30 +36,29 @@ void initialize_input(const unsigned ntt_size, const unsigned nof_ntts, E * elem
 
 // on-device data
 
-S* d_twiddles;
-E* d_elements;
+E* d_input;
+E* d_output;
 
 nvmlDevice_t device;
-cudaStream_t stream;
+auto ctx = device_context::get_default_device_context();
+ntt::NTTConfig<S> config=ntt::GetDefaultNTTConfig();
 
 static void DoSetup(const benchmark::State& state) {
   unsigned log_ntt_size = state.range(0);  
   unsigned ntt_size = 1 << log_ntt_size;
-  // std::cout << "DoSetup: " << log_ntt_size << std::endl;
-  d_twiddles = fill_twiddle_factors_array((uint32_t) ntt_size, S::omega(log_ntt_size), stream); // Scalars
   elements = (E*) malloc(sizeof(E) * ntt_size);
-  initialize_input(ntt_size, 1, elements );
-  cudaMallocAsync(&d_elements, sizeof(E) * ntt_size, stream);
-  cudaMemcpyAsync(d_elements, elements, sizeof(E) * ntt_size, cudaMemcpyHostToDevice, stream);
-  cudaStreamSynchronize(stream);
+  initialize_input(ntt_size, nof_ntts, elements );
+  cudaMallocAsync(&d_input, sizeof(E) * ntt_size, ctx.stream);
+  cudaMallocAsync(&d_output, sizeof(E) * ntt_size, ctx.stream);
+  cudaMemcpyAsync(d_input, elements, sizeof(E) * ntt_size, cudaMemcpyHostToDevice, ctx.stream);
+  cudaStreamSynchronize(ctx.stream);
 }
 
 static void DoTeardown(const benchmark::State& state) {
   unsigned log_ntt_size = state.range(0);  
-  // std::cout << "DoTeardown: " << log_ntt_size << std::endl;
-  cudaFreeAsync(d_elements, stream);
-  cudaFreeAsync(d_twiddles, stream);
-  cudaStreamSynchronize(stream);
+  cudaFreeAsync(d_input, ctx.stream);
+  cudaFreeAsync(d_output, ctx.stream);
+  cudaStreamSynchronize(ctx.stream);
   free(elements);
 }
 
@@ -87,9 +71,10 @@ static void BM_ntt(benchmark::State& state) {
   
   for (auto _ : state) {
     // for (unsigned i = 0; i < nof_ntts; i++) {
-    ntt_inplace_batch_template(d_elements, d_twiddles, ntt_size, 1, inverse, false, _null, stream, false);
+    // ntt_inplace_batch_template(d_elements, d_twiddles, ntt_size, 1, inverse, false, _null, stream, false);
+    cudaError_t err = ntt::NTT<S, E>(d_input, ntt_size, ntt::NTTDir::kForward, config, d_output);
     // }
-    cudaStreamSynchronize(stream);
+    cudaStreamSynchronize(ctx.stream);
   }
 
   unsigned int power;
@@ -123,9 +108,6 @@ BENCHMARK(BM_ntt) //->MinTime(30.)
   ;
   
 
-  
- 
-
 int main(int argc, char** argv) {
   cudaDeviceReset();
   cudaDeviceProp deviceProperties;
@@ -139,7 +121,21 @@ int main(int argc, char** argv) {
   nvmlInit();
   nvmlDeviceGetHandleByIndex(0, &device);  // for GPU 0
 
-  cudaStreamCreate(&stream);
+  cudaStreamCreate(&ctx.stream);
+  // the next line is valid only for CURVE_ID 1 (will add support for other curves soon)
+#if CURVE_ID == BN254  
+  scalar_t rou = scalar_t{ {0x53337857, 0x53422da9, 0xdbed349f, 0xac616632, 0x6d1e303, 0x27508aba, 0xa0ed063, 0x26125da1} };
+#else
+#error "Unsupported curve"
+#endif  
+  ntt::InitDomain(rou, ctx);
+  
+  config.batch_size = nof_ntts;
+  config.ctx.stream = ctx.stream;
+  // all data is on device, blocking calls
+  config.are_inputs_on_device = true;
+  config.are_outputs_on_device = true;
+  config.is_async = false;
   
   ::benchmark::Initialize(&argc, argv);
   if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1;
@@ -149,9 +145,8 @@ int main(int argc, char** argv) {
   ::benchmark::AddCustomContext("frequency_MHz", std::to_string(gpu_clock_mhz));
   ::benchmark::AddCustomContext("uses", curve);
   ::benchmark::AddCustomContext("comment", "on-device API");
-  // ::benchmark::AddCustomContext("coefficient_C", std::to_string(bucket_factor));
   ::benchmark::RunSpecifiedBenchmarks();
 
-  cudaStreamDestroy(stream);
+  cudaStreamDestroy(ctx.stream);
   return 0;
 }

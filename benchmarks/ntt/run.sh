@@ -11,11 +11,11 @@ DB_PASS=${INGO_BENCHMARKS_DB_PASS}
 
 
 # testing this Icicle version
-git_id=$(cd /icicle && git rev-parse --short HEAD)
+git_id=$(cd /opt/icicle && git rev-parse --short HEAD)
 echo "Icicle GitID: $git_id"
 
 echo "Running the benchmarks and capturing the output in the file benchmark.json"
-#/icicle-benchmark/build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
+# ./build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
 
 json_data=$(<benchmark.json)
 
@@ -111,6 +111,8 @@ VALUES (
 );
 "
   echo "$QUERY" >> benchmark.sql
+  # *manually* insert the benchmark.sql file into the database 
+  # echo $(<benchmark.sql)
 
   # Execute the psql command to insert the row into the ntt_benchmark table
   # PGPASSWORD=$DB_PASS psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c $QUERY

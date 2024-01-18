@@ -12,35 +12,13 @@ jobs:
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
 
     steps:
-    # - name: Clone Icicle
-    #   uses: actions/checkout@v4
-    #   with:
-    #     repository: ingonyama-zk/icicle
-    #     path: icicle
+      # Assume Icicle is in /opt/icicle
 
     - name: Checkout repository
       uses: actions/checkout@v4
-      # with:
-      #   path: main
-
-    - name: Print context
-      run: |
-        echo "GITHUB_WORKSPACE $GITHUB_WORKSPACE"
-        echo "GITHUB_REPOSITORY $GITHUB_REPOSITORY"
-        echo "GITHUB_ACTOR $GITHUB_ACTOR"
-        echo "Workflow $GITHUB_WORKFLOW"
-        ls -la
-
-    - name: Execute Script
-      run: |
-        # cd main
-        pwd
-        chmod +x ./benchmarks/run-all-benchmarks.sh
-        ./benchmarks/run-all-benchmarks.sh
 
     - name: Benchmark add operation
       run: |
-        # git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/add
         ./compile.sh
         ./run.sh
@@ -48,17 +26,22 @@ jobs:
 
     - name: Benchmark multiply operation
       run: |
-        # git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/multiply
         ./compile.sh
         ./run.sh
         cat ./benchmark.sql
 
-
     - name: Benchmark MSM operation
       run: |
-        # git config --global --add safe.directory /opt/icicle
         cd ./benchmarks/msm
         ./compile.sh
         ./run.sh
         cat ./benchmark.sql
+
+    - name: Benchmark NTT operation
+      run: |
+        cd ./benchmarks/ntt
+        ./compile.sh
+        ./run.sh
+        cat ./benchmark.sql
+  
