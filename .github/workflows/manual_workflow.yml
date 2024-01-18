@@ -17,6 +17,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    # - name: configure git
+    #   run: git config --global --add safe.directory /opt/icicle
+
     - name: Benchmark add operation
       run: |
         cd ./benchmarks/add
