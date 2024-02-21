@@ -1,7 +1,6 @@
-# Icicle benchmark: Multi Scalar Multiplication
+# Icicle benchmark: Number Theoretic Transform
 
-The benchmark measures the runtime of [Multi-Scalar Multiplication](https://github.com/ingonyama-zk/ingopedia/blob/master/src/msm.md).
-
+The benchmark measures the runtime of [Number Theoretic Transform](https://dev.ingonyama.com/icicle/primitives/ntt).
 
 ## Best-Practices
 
@@ -15,4 +14,3 @@ Inside the container,
 ./compile.sh
 ./run.sh
 ```
-

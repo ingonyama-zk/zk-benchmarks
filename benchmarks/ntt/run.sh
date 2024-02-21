@@ -15,7 +15,7 @@ git_id=$(cd /opt/icicle && git rev-parse --short HEAD)
 echo "Icicle GitID: $git_id"
 
 echo "Running the benchmarks and capturing the output in the file benchmark.json"
-./build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
+# ./build/benchmark --benchmark_time_unit=s  --benchmark_out_format=json --benchmark_out=benchmark.json
 
 json_data=$(<benchmark.json)
 
