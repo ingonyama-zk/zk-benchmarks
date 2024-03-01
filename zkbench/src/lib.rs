@@ -28,7 +28,10 @@ pub struct MsmBenchmark {
     pub uses: String
 }
 
-pub async fn add_msm(pool: &PgPool, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
+// pub async fn add_msm(pool: &PgPool, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
+    // fn print_result(result: Result<f64, &'static str>) 
+pub async fn add_msm<T,E: std::fmt::Display>(connection_result: Result<T, E>, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
+    print!("===> add msm");
     let timestamp_utc: DateTime<Utc> = Utc::now();
     println!("Timestamp: {}", timestamp_utc.format("%Y-%m-%d %H:%M:%S %:z"));
     let test_timestamp_naive: NaiveDateTime = timestamp_utc.naive_utc();
@@ -61,10 +64,23 @@ RETURNING id
         benchmark.comment,
         benchmark.runs_on,
         benchmark.uses
-    )
-    .fetch_one(pool)
-    .await?;
-    Ok(rec.id)
+    );
+    // print connection_result
+    // match result {
+    //     Ok(value) => println!("The operation was successful. Result: {}", value),
+    //     Err(e) => println!("The operation failed with error: {}", e),
+    // }
+    match connection_result {
+        Ok(_) => println!("Connection to database successful"),
+        Err(e) => {
+            println!("Connection to database failed: {}", e);
+            // print!("SQL query: {:#?}", rec);
+        }
+    }
+    // rec.fetch_one(pool)
+    // .await?;
+    // Ok(rec.id)
+    Ok(0)
 }
 
 pub async fn list_msm(pool: &PgPool) -> anyhow::Result<()> {

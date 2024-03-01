@@ -1,6 +1,10 @@
 # Ignore environment configuration
 .env
 ingo_benchmarks.sh
+criterion.json
+metadata.json
+
+
 
 # sql
 benchmark.json
