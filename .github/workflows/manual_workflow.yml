@@ -53,3 +53,4 @@ jobs:
         cd ./benchmarks/rust/msm
         pwd
         ls -la
+        nvidia-smi
