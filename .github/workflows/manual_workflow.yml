@@ -12,10 +12,18 @@ jobs:
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
 
     steps:
-      # Assume Icicle is in /opt/icicle
+      # Directory "common" will keep both ICICLE and bewnchmarks
+    # - name: Checkout benchmarks repository
+    #   uses: actions/checkout@v2
+    #   with:
+    #     repository: 'owner/repo1'
+    #     path: 'parent_directory/repo1'
 
-    - name: Checkout repository
+    - name: Checkout zk-benchmarks repository
       uses: actions/checkout@v4
+      with:
+        repository: 'ingonyama-zk/zk-benchmarks'
+        path: 'common/zk-benchmarks'
 
     # - name: configure git
     #   run: git config --global --add safe.directory /opt/icicle
@@ -50,7 +58,7 @@ jobs:
   
     - name: Benchmark Rust MSM operation
       run: |
-        cd ./benchmarks/rust/msm
+        # cd ./benchmarks/rust/msm
         pwd
         ls -la
         nvidia-smi
