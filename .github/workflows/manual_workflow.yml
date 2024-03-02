@@ -13,17 +13,18 @@ jobs:
 
     steps:
       # Directory "common" will keep both ICICLE and bewnchmarks
-    # - name: Checkout benchmarks repository
-    #   uses: actions/checkout@v2
-    #   with:
-    #     repository: 'owner/repo1'
-    #     path: 'parent_directory/repo1'
+    
+    - name: Checkout zk-benchmarks repository
+      uses: actions/checkout@v4
+      with:
+        repository: 'ingonyama-zk/zk-benchmarks'
+        path: 'common/zk-benchmarks'
 
-    # - name: Checkout zk-benchmarks repository
-    #   uses: actions/checkout@v4
-    #   with:
-    #     repository: 'ingonyama-zk/zk-benchmarks'
-    #     path: 'common/zk-benchmarks'
+    - name: Checkout ICICLE repository
+      uses: actions/checkout@v4
+      with:
+        repository: 'ingonyama-zk/icicle'
+        path: 'common/icicle'
 
     # - name: configure git
     #   run: git config --global --add safe.directory /opt/icicle
@@ -61,4 +62,7 @@ jobs:
         # cd ./benchmarks/rust/msm
         pwd
         ls -la
-        nvidia-smi
+        cd ./common
+        pwd
+        ls -la
+        
