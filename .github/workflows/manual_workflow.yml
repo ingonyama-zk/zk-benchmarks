@@ -19,11 +19,11 @@ jobs:
     #     repository: 'owner/repo1'
     #     path: 'parent_directory/repo1'
 
-    - name: Checkout zk-benchmarks repository
-      uses: actions/checkout@v4
-      with:
-        repository: 'ingonyama-zk/zk-benchmarks'
-        path: 'common/zk-benchmarks'
+    # - name: Checkout zk-benchmarks repository
+    #   uses: actions/checkout@v4
+    #   with:
+    #     repository: 'ingonyama-zk/zk-benchmarks'
+    #     path: 'common/zk-benchmarks'
 
     # - name: configure git
     #   run: git config --global --add safe.directory /opt/icicle
