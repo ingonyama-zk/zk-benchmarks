@@ -9,6 +9,7 @@ use icicle_cuda_runtime::memory::HostOrDeviceSlice;
 use zkbench::{MsmBenchmark,git_id};
 use std::fs::write;
 use std::env;
+use chrono::{Utc, DateTime, NaiveDateTime};
 
 // A function to benchmark
 fn process_data(upper_points: &[G1Affine], upper_scalars: &[ScalarField]) -> i32 {
@@ -31,16 +32,21 @@ fn process_data(upper_points: &[G1Affine], upper_scalars: &[ScalarField]) -> i32
 
 // The benchmark function
 fn benchmark(c: &mut Criterion) {
+    let timestamp_utc: DateTime<Utc> = Utc::now();
+    let test_timestamp_naive: NaiveDateTime = timestamp_utc.naive_utc();
     let repository_path = env::var("BENCHMARK_REPO").expect("BENCHMARK_REPO must be set");
     let mut b = MsmBenchmark::default();
+    b.test_timestamp = test_timestamp_naive;
+    b.team = "Ingonyama".to_string();
     b.project = "ICICLE".to_string();
     b.uses = "BN254".to_string();
     b.git_id = zkbench::git_id(&repository_path);
     b.frequency_mhz = 0;
     b.vector_size = 0;
-    b.batch_size = 0;
-    b.comment = "example-benchmark".to_string();
-    b.runs_on = "NVIDIA GeForce RTX 3090".to_string();
+    b.batch_size = 1;
+    b.comment = "junk".to_string();
+    let device = zkbench::gpu_name(0).trim_end_matches('\n').to_string();
+    b.runs_on = device;
 
     let json_string = serde_json::to_string_pretty(&b).expect("Serialization failed");
     let file_path = "./metadata.json";
@@ -76,30 +82,3 @@ fn benchmark(c: &mut Criterion) {
 
 criterion_group!(benches, benchmark);
 criterion_main!(benches);
-
-
-
-
-// use criterion::{black_box, criterion_group, criterion_main, Criterion};
-
-
-
-
-// pub fn criterion_benchmark(c: &mut Criterion) {
-    
-
-
-
-
-
-
-
-
-
-
-//     println!("JSON metadata saved to file: {}", file_path);
-//     c.bench_function("fib 20", |b| b.iter(|| fibonacci(black_box(20))));
-// }
-
-// criterion_group!(benches, criterion_benchmark);
-// criterion_main!(benches);

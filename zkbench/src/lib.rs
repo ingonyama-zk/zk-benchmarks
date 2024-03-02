@@ -10,9 +10,35 @@ use git2::{Repository, DescribeOptions};
 // MSM - Multi Scalar Multiplication
 //////////////////////////////////////
 
-#[derive(Debug, FromRow, Default, Serialize, Deserialize)]
+
+// SELECT column_name, data_type, is_nullable, column_default
+// FROM information_schema.columns
+// WHERE table_schema = 'public' 
+// AND table_name   = 'msm_benchmark';
+
+// column_name   |          data_type          | is_nullable | column_default 
+// ----------------+-----------------------------+-------------+----------------
+//  id             | integer                     | NO          | 
+//  team           | character varying           | YES         | 
+//  project        | character varying           | YES         | 
+//  test_timestamp | timestamp without time zone | YES         | 
+//  git_id         | character varying           | YES         | 
+//  frequency_mhz  | integer                     | YES         | 
+//  vector_size    | bigint                      | YES         | 
+//  coefficient_c  | integer                     | YES         | 
+//  batch_size     | integer                     | YES         | 
+//  runtime_sec    | real                        | YES         | 
+//  power_watt     | real                        | YES         | 
+//  chip_temp_c    | real                        | YES         | 
+//  comment        | character varying           | YES         | 
+//  runs_on        | integer                     | YES         | 
+//  uses           | integer                     | YES         | 
+
+
+#[derive(Debug, FromRow, Default, Serialize, Deserialize, Clone)]
 pub struct MsmBenchmark {
     pub id: i32,
+    pub team: String,
     pub project: String,
     pub test_timestamp: NaiveDateTime,
     pub git_id: String,
@@ -28,9 +54,8 @@ pub struct MsmBenchmark {
     pub uses: String
 }
 
-// pub async fn add_msm(pool: &PgPool, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
-    // fn print_result(result: Result<f64, &'static str>) 
-pub async fn add_msm<T,E: std::fmt::Display>(connection_result: Result<T, E>, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
+pub async fn add_msm(pool: &PgPool, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
+// pub async fn add_msm<T,E: std::fmt::Display>(connection_result: Result<T, E>, benchmark: MsmBenchmark) -> anyhow::Result<i32> {
     print!("===> add msm");
     let timestamp_utc: DateTime<Utc> = Utc::now();
     println!("Timestamp: {}", timestamp_utc.format("%Y-%m-%d %H:%M:%S %:z"));
@@ -40,17 +65,18 @@ pub async fn add_msm<T,E: std::fmt::Display>(connection_result: Result<T, E>, be
         r#"
 INSERT INTO msm_benchmark 
     (
-        project, test_timestamp, git_id, frequency_mhz, vector_size, coefficient_c, 
+        team, project, test_timestamp, git_id, frequency_mhz, vector_size, coefficient_c, 
         batch_size, runtime_sec, power_watt, chip_temp_c, comment, runs_on, uses
     )
 VALUES 
     (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,
-        (SELECT id FROM hw_platform WHERE device = $12), 
-        (SELECT id FROM finite_field WHERE name = $13)
+        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12,
+        (SELECT id FROM hw_platform WHERE device = $13), 
+        (SELECT id FROM finite_field WHERE name = $14)
     )
 RETURNING id
         "#,
+        benchmark.team,
         benchmark.project,
         test_timestamp_naive,
         benchmark.git_id,
@@ -65,28 +91,18 @@ RETURNING id
         benchmark.runs_on,
         benchmark.uses
     );
-    // print connection_result
-    // match result {
-    //     Ok(value) => println!("The operation was successful. Result: {}", value),
-    //     Err(e) => println!("The operation failed with error: {}", e),
-    // }
-    match connection_result {
-        Ok(_) => println!("Connection to database successful"),
-        Err(e) => {
-            println!("Connection to database failed: {}", e);
-            // print!("SQL query: {:#?}", rec);
-        }
-    }
-    // rec.fetch_one(pool)
-    // .await?;
-    // Ok(rec.id)
+    
+    let r = rec.fetch_one(pool).await?;
+    println!("===> add msm: {}", r.id);
+    // Ok(r)
     Ok(0)
 }
 
 pub async fn list_msm(pool: &PgPool) -> anyhow::Result<()> {
+    println!("===> list msm");
     let recs = sqlx::query!(
         r#"
-SELECT id, project, test_timestamp, git_id, frequency_mhz, vector_size, coefficient_c, batch_size, runtime_sec, power_watt, chip_temp_c, comment, runs_on, uses  
+SELECT id, team, project, test_timestamp, git_id, frequency_mhz, vector_size, coefficient_c, batch_size, runtime_sec, power_watt, chip_temp_c, comment, runs_on, uses  
 FROM msm_benchmark
 ORDER BY id
         "#
@@ -96,8 +112,9 @@ ORDER BY id
 
     for rec in recs {
         println!(
-            "- [{}] {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}",
+            "- [{}] {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}: {:?}",
             rec.id,
+            &rec.team,
             &rec.project,
             &rec.test_timestamp,
             &rec.git_id,
@@ -314,5 +331,16 @@ pub fn git_id(directory: &str) -> String {
     // Get the commit ID of the parsed revision
     let commit_id = head_revision.id();
     // println!("Current commit hash: {}", commit_id);
-    commit_id.to_string()
+    // commit_id.to_string()
+    commit_id.to_string()[..7].to_string()
+}
+
+pub fn gpu_name(_gpu_num: u32) -> String {
+    // call nvidia-smi to get the GPU name
+    let output = std::process::Command::new("nvidia-smi")
+        .args(&["--query-gpu=name", "--format=csv,noheader"])
+        .output()
+        .expect("Failed to execute command");
+    let output_string = String::from_utf8_lossy(&output.stdout).to_string();
+    output_string
 }
