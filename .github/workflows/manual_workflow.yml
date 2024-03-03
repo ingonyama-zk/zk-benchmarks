@@ -62,7 +62,10 @@ jobs:
         # cd ./benchmarks/rust/msm
         pwd
         ls -la
-        cd ./common
+        echo "Running Rust MSM test"
+        cd ./common/zk-benchmarks/benchmarks/rust/msm
         pwd
         ls -la
+        cd 
+        cargo criterion --message-format=json > ./criterion.json
         
