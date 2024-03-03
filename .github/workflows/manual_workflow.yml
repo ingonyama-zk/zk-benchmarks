@@ -16,19 +16,24 @@ jobs:
     
     - name: Checkout zk-benchmarks repository
       uses: actions/checkout@v4
-      #with:
-      #  repository: 'ingonyama-zk/zk-benchmarks'
-      #  path: 'common/zk-benchmarks'
 
     - name: Build Docker image
       run: |
         docker build -t zk-benchmarks-image . 
 
-    # - name: Checkout ICICLE repository
-    #   uses: actions/checkout@v4
-    #   with:
-    #     repository: 'ingonyama-zk/icicle'
-    #     path: 'common/icicle'
+    - name: Benchmark Rust MSM operation
+      run: |
+        # cd ./benchmarks/rust/msm
+        pwd
+        ls -la
+        #cargo criterion --message-format=json > ./criterion.json
+        docker images
+        docker run zk-benchmarks-image:latest
+        
+
+    # - name: Save Docker image
+    #   run: |
+    #     docker save zk-benchmarks-image:latest | gzip > zk-benchmarks-image.tar.gz
 
     # - name: configure git
     #   run: git config --global --add safe.directory /opt/icicle
@@ -61,11 +66,4 @@ jobs:
     #     ./run.sh
     #     cat ./benchmark.sql
   
-    - name: Benchmark Rust MSM operation
-      run: |
-        # cd ./benchmarks/rust/msm
-        pwd
-        ls -la
-        #cargo criterion --message-format=json > ./criterion.json
-        docker images
-        
+    
