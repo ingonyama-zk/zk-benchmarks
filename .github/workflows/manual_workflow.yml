@@ -66,6 +66,6 @@ jobs:
         cd ./common/zk-benchmarks/benchmarks/rust/msm
         pwd
         ls -la
-        cd 
-        cargo criterion --message-format=json > ./criterion.json
+        #cargo criterion --message-format=json > ./criterion.json
+        docker images
         
