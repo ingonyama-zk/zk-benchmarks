@@ -28,7 +28,7 @@ jobs:
         ls -la
         #cargo criterion --message-format=json > ./criterion.json
         docker images
-        docker run zk-benchmarks-image:latest
+        docker run --gpus all zk-benchmarks-image:latest
         
 
     # - name: Save Docker image
