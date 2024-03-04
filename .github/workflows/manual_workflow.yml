@@ -5,7 +5,7 @@ on:
 
 jobs:
   manual-job:
-    runs-on: [ self-hosted, icicle ]
+    runs-on: [self-hosted, benchmarks, icicle ]
 
     env:
       TEST_SECRET: ${{ secrets.MY_TEST_SECRET }}  
