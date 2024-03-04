@@ -7,10 +7,10 @@ edition = "2021"
 zkbench = { path = "../../../zkbench" }
 serde_json = "1.0"
 git2 = "0.17"
-icicle-cuda-runtime = { path = "/home/stas/Projects/ingonyama-zk/icicle/wrappers/rust/icicle-cuda-runtime" }
-icicle-core = { path = "/home/stas/Projects/ingonyama-zk/icicle/wrappers/rust/icicle-core" }
-icicle-bn254 = { path = "/home/stas/Projects/ingonyama-zk/icicle/wrappers/rust/icicle-curves/icicle-bn254", features = ["g2"] }
-icicle-bls12-377 = { path = "/home/stas/Projects/ingonyama-zk/icicle/wrappers/rust/icicle-curves/icicle-bls12-377" }
+icicle-cuda-runtime = { path = "../../../../icicle/wrappers/rust/icicle-cuda-runtime" }
+icicle-core = { path = "../../../../icicle/wrappers/rust/icicle-core" }
+icicle-bn254 = { path = "../../../../icicle/wrappers/rust/icicle-curves/icicle-bn254", features = ["g2"] }
+icicle-bls12-377 = { path = "../../../../icicle/wrappers/rust/icicle-curves/icicle-bls12-377" }
 ark-bn254 = { version = "0.4.0", optional = true}
 ark-bls12-377 = { version = "0.4.0", optional = true}
 ark-ec = { version = "0.4.0", optional = true}

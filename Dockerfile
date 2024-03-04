@@ -2,6 +2,7 @@
 FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 # Install necessary packages
+
 # nsight-systems-12.2 \
 RUN apt-get update && apt-get install -y \
     sudo \
@@ -13,11 +14,14 @@ RUN apt-get update && apt-get install -y \
     libboost-all-dev \
     jq \
     postgresql-client \
+    pkg-config \
     libssl-dev \
+    llvm \
+    libclang-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone Icicle from a GitHub repository
-RUN git clone https://github.com/ingonyama-zk/icicle.git  /opt/icicle 
+#RUN git clone https://github.com/ingonyama-zk/icicle.git  /opt/icicle 
 
 # Benchmarking in C++
 RUN git clone https://github.com/google/benchmark.git /opt/benchmark \
@@ -35,24 +39,23 @@ USER runner
 
 # Now all commands will be run as "runner"
 
-RUN git config --global --add safe.directory /opt/icicle
+ENV BENCHMARK_REPO=/home/runner/icicle/
 
-# Define a build-time variable for the runner version
-ARG RUNNER_VERSION=2.311.0
-ARG RUNNER_TOKEN=NEEDTOSET
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/home/runner/.cargo/bin:${PATH}"
+RUN cargo install cargo-criterion
 
-# Download & install the GitHub Actions runner
-# RUN cd /home/runner && \
-#      curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
-#      tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
-#      rm ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz && \
-#      ./config.sh --url https://github.com/ingonyama-zk/zk-benchmarks --token ${RUNNER_TOKEN} --name "docker-runner" --unattended --replace
+
+RUN git clone https://github.com/ingonyama-zk/icicle.git  /home/runner/icicle 
+RUN cd /home/runner/icicle/wrappers/rust && cargo build 
+
+#RUN git config --global --add safe.directory /opt/icicle
 
 # Set the entry point
 WORKDIR /home/runner
-#ENTRYPOINT [".run.sh --once"]
-#CMD ["/bin/bash"]
-CMD ["ls -la"]
+CMD ["/bin/bash"]
+#CMD ["ls -la"]
 
 
 

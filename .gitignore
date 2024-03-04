@@ -4,6 +4,7 @@ ingo_benchmarks.sh
 criterion.json
 metadata.json
 
+.bash_history
 
 
 # sql

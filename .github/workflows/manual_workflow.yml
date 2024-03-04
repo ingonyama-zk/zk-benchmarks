@@ -5,14 +5,13 @@ on:
 
 jobs:
   manual-job:
-    runs-on: self-hosted
+    runs-on: [ self-hosted, icicle ]
 
     env:
       TEST_SECRET: ${{ secrets.MY_TEST_SECRET }}  
       INGO_BENCHMARKS_DB_PASS: ${{ secrets.INGO_BENCHMARKS_DB_PASS }}
 
     steps:
-      # Directory "common" will keep both ICICLE and bewnchmarks
     
     - name: Checkout zk-benchmarks repository
       uses: actions/checkout@v4
@@ -28,7 +27,7 @@ jobs:
         ls -la
         #cargo criterion --message-format=json > ./criterion.json
         docker images
-        docker run --gpus all zk-benchmarks-image:latest
+        #docker run --gpus all zk-benchmarks-image:latest
         
 
     # - name: Save Docker image
