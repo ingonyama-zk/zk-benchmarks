@@ -9,6 +9,6 @@ Workflow:
 	- insert into database
 
 `cargo install cargo-criterion`
-`cargo criterion --message-format=json > /tmp/criterion.json`
+`cargo criterion --message-format=json > ./criterion.json`
 
 

@@ -4,7 +4,7 @@ use sqlx::postgres::PgPool;
 use sqlx::FromRow;
 use chrono::{Utc, DateTime, NaiveDateTime};
 use serde::{Serialize, Deserialize};
-use git2::{Repository, DescribeOptions};
+use git2::Repository;
 
 //////////////////////////////////////
 // MSM - Multi Scalar Multiplication

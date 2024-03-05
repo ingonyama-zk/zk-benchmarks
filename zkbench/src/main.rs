@@ -1,10 +1,12 @@
 use std::fs;
+use std::fs::File;
 use serde::{Serialize, Deserialize};
 use serde_json::{Result,Deserializer};
 use zkbench::{MsmBenchmark,NttBenchmark,git_id};
 use sqlx::postgres::PgPool;
 use std::env;
 use dotenv::dotenv;
+use std::process::{Command, Stdio};
 
 #[derive(Debug, Deserialize)]
 pub struct Typical {
@@ -35,7 +37,7 @@ pub struct Performance {
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     // export RUST_LOG=sqlx=trace
     env_logger::init();
     dotenv().ok();
@@ -45,17 +47,27 @@ async fn main() {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     println!("Database URL: {}", database_url);
 
-
     let id = zkbench::git_id(&repository_path);
     println!("Current commit hash: {}", id);
 
-    // experiment with database INSERT
     let path= "../benchmarks/rust/msm";
-    let metadata_path = format!("{}/metadata.json", path);
+    let output_json = File::create("/tmp/criterion.json")?;
+    // let output_json = File::create("/tmp/criterion1.json").expect("Failed to create file");
+    let mut child  = Command::new("cargo")
+        .arg("criterion")
+        .arg("--message-format")
+        .arg("json")
+        .current_dir(path)
+        .stdout(Stdio::from(output_json))
+        .spawn()?;
+    // Wait for the command to complete
+    let _result = child.wait()?;
+
+    let metadata_path = "/tmp/metadata.json";
     let metadata_json = fs::read_to_string(metadata_path).expect("Failed to read the file");
     let mut meta: MsmBenchmark = serde_json::from_str(&metadata_json.to_string()).expect("Deserialization failed");
     println!("Metadata {:?}",meta);
-    let performance_path = format!("{}/criterion.json", path);
+    let performance_path = "/tmp/criterion.json";
     let performance_json = fs::read_to_string(performance_path).expect("Failed to read the file");
     // Deserialize the first JSON object in the file
     let mut deserializer = Deserializer::from_str(&performance_json);
@@ -69,13 +81,20 @@ async fn main() {
                 // Handle the Performance object.
                 // For example, you might print it:
                 println!("Performance: {:?}", performance);
+                
+                let vector_size: i64 = performance.benchmark_id.split('/')
+                    .nth(1)
+                    .expect("no second part")
+                    .parse().
+                    expect("not a number");
+                println!("vector size {:?}", vector_size);
                 let mut b = meta.clone();
+                b.vector_size = vector_size;
                 let runtime = normalize_runtime(performance.typical);
                 b.runtime_sec = Some(runtime);
-                
                 println!("Runtime: {:?}", runtime);
-                // println!("Benchmark: {:?}", b);
-                // zkbench::list_msm(&pool).await;
+                println!("Benchmark: {:?}", b);
+                // let msm_id = 0;
                 let msm_id = zkbench::add_msm(&pool, b).await;
                 println!("Added new msm with id {:?}", msm_id);
             }
@@ -87,4 +106,5 @@ async fn main() {
         }
     }
     pool.close().await;
+    Ok(())
 }

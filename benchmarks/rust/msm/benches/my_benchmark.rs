@@ -49,7 +49,7 @@ fn benchmark(c: &mut Criterion) {
     b.runs_on = device;
 
     let json_string = serde_json::to_string_pretty(&b).expect("Serialization failed");
-    let file_path = "./metadata.json";
+    let file_path = "/tmp/metadata.json";
     write(file_path, json_string).expect("Failed to write JSON to file");
     let mut group = c.benchmark_group("ProcessData");
     group.sample_size(10); // Default is 100
