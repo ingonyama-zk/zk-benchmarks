@@ -6,24 +6,25 @@ use icicle_core::traits::GenerateRandom;
 use icicle_core::msm;
 use icicle_cuda_runtime::stream::CudaStream;
 use icicle_cuda_runtime::memory::HostOrDeviceSlice;
-use zkbench::{MsmBenchmark,git_id};
-use std::fs::write;
+use zkbench::{MsmBenchmark,git_id,gpu_name};
+use std::fs;
+use std::fs::OpenOptions;
+use std::fs::File;
+use std::io::Write;
 use std::env;
 use chrono::{Utc, DateTime, NaiveDateTime};
 
-// A function to benchmark
-fn process_data(upper_points: &[G1Affine], upper_scalars: &[ScalarField]) -> i32 {
-    // let upper_size = 100;
-    let size = 10;
-    let points = HostOrDeviceSlice::Host(upper_points[..size].to_vec());
-    // let points = HostOrDeviceSlice::Host(upper_points.to_vec());
-    let scalars = HostOrDeviceSlice::Host(upper_scalars[..size].to_vec());
+// on-host data
+fn msm1(points: &[G1Affine], scalars: &[ScalarField]) -> i32 {
+    let size  = points.len();
+    let p = HostOrDeviceSlice::Host(points[..size].to_vec());
+    let s = HostOrDeviceSlice::Host(scalars[..size].to_vec());
     let mut msm_results: HostOrDeviceSlice<'_, G1Projective> = HostOrDeviceSlice::cuda_malloc(1).unwrap();
     let stream = CudaStream::create().unwrap();
     let mut cfg = msm::MSMConfig::default();
     cfg.ctx.stream = &stream;
     cfg.is_async = true;
-    msm::msm(&scalars, &points, &cfg, &mut msm_results).unwrap();
+    msm::msm(&s, &p, &cfg, &mut msm_results).unwrap();
     stream.synchronize().unwrap();
     // msm_results.copy_to_host(&mut msm_host_result[..]).unwrap();
     stream.destroy().unwrap();
@@ -31,54 +32,88 @@ fn process_data(upper_points: &[G1Affine], upper_scalars: &[ScalarField]) -> i32
 }
 
 // The benchmark function
-fn benchmark(c: &mut Criterion) {
-    let timestamp_utc: DateTime<Utc> = Utc::now();
-    let test_timestamp_naive: NaiveDateTime = timestamp_utc.naive_utc();
-    let repository_path = env::var("BENCHMARK_REPO").expect("BENCHMARK_REPO must be set");
-    let mut b = MsmBenchmark::default();
-    b.test_timestamp = test_timestamp_naive;
-    b.team = "Ingonyama".to_string();
-    b.project = "ICICLE".to_string();
-    b.uses = "BN254".to_string();
-    b.git_id = zkbench::git_id(&repository_path);
-    b.frequency_mhz = 0;
-    b.vector_size = 0;
-    b.batch_size = 1;
-    b.comment = "junk".to_string();
-    let device = zkbench::gpu_name(0).trim_end_matches('\n').to_string();
-    b.runs_on = device;
-
-    let json_string = serde_json::to_string_pretty(&b).expect("Serialization failed");
-    let file_path = "/tmp/metadata.json";
-    write(file_path, json_string).expect("Failed to write JSON to file");
-    let mut group = c.benchmark_group("ProcessData");
+fn benchmark1(c: &mut Criterion) {
+    let mut group = c.benchmark_group("On-host data");
     group.sample_size(10); // Default is 100
 
-    // Example sizes for the input data
-    // let sizes = [10, 100, 1_000, 10_000];
     let sizes = [10, 100];
 
     for &size in &sizes {
         group.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, &size| {
             b.iter_batched_ref(
                 || {  
-                    // Setup code: generate random inputs
                     let points = CurveCfg::generate_random_affine_points(size);
                     let scalars = ScalarCfg::generate_random(size);
-                    (points, scalars) // Return as a tuple
+                    (points, scalars)
                 },
                 |(points, scalars)| {
-                    // The actual benchmarked code
-                    // We wrap our function call with `black_box` to prevent compiler optimizations
-                    black_box(process_data(&points, &scalars))
+                    black_box(msm1(&points, &scalars))
                 },
                 criterion::BatchSize::SmallInput, // Adjust based on the relative expense of the setup code
             );
         });
     }
-
     group.finish();
 }
 
-criterion_group!(benches, benchmark);
-criterion_main!(benches);
+fn benchmark2(c: &mut Criterion) {
+    let mut group = c.benchmark_group("On-device data");
+    group.sample_size(10); // Default is 100
+
+    let sizes = [10, 100];
+
+    for &size in &sizes {
+        group.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, &size| {
+            b.iter_batched_ref(
+                || {  
+                    let points = CurveCfg::generate_random_affine_points(size);
+                    let scalars = ScalarCfg::generate_random(size);
+                    (points, scalars)
+                },
+                |(points, scalars)| {
+                    black_box(msm1(&points, &scalars))
+                },
+                criterion::BatchSize::SmallInput, // Adjust based on the relative expense of the setup code
+            );
+        });
+    }
+    group.finish();
+}
+
+criterion_group!(group1, benchmark1);
+criterion_group!(group2, benchmark2);
+
+fn main() {
+    let metadata_path = "/tmp/metadata.json";
+    let mut metadata: Vec<MsmBenchmark> = Vec::new();
+
+    // common metadata for benchmark groups
+    let timestamp_utc: DateTime<Utc> = Utc::now();
+    let test_timestamp_naive: NaiveDateTime = timestamp_utc.naive_utc();
+    let mut m = MsmBenchmark::default();
+    m.test_timestamp = test_timestamp_naive;
+    m.team = "Ingonyama".to_string();
+    m.project = "ICICLE".to_string();
+    m.uses = "BN254".to_string();
+    let repository_path = env::var("BENCHMARK_REPO").expect("BENCHMARK_REPO must be set");
+    m.git_id = git_id(&repository_path);
+    m.frequency_mhz = 0;
+    m.vector_size = 0;
+    m.batch_size = 1;
+    let device = gpu_name(0);
+    m.runs_on = device;
+
+    println!("Running group1 benchmarks...");
+    m.comment = "junk".to_string();
+    metadata.push(m.clone());
+    group1();
+    
+    println!("Running group2 benchmarks...");
+    m.comment = "junk2".to_string();
+    metadata.push(m.clone());
+    group2();
+
+    println!("Writing metadata json to file {}", metadata_path);
+    let file = File::create(metadata_path).expect("Failed to create file");
+    serde_json::to_writer(file, &metadata).expect("Failed to write JSON to file");
+}

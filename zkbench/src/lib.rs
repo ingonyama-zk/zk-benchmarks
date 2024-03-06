@@ -342,5 +342,5 @@ pub fn gpu_name(_gpu_num: u32) -> String {
         .output()
         .expect("Failed to execute command");
     let output_string = String::from_utf8_lossy(&output.stdout).to_string();
-    output_string
+    output_string.trim_end_matches('\n').to_string()
 }
