@@ -16,16 +16,21 @@ jobs:
     - name: Checkout zk-benchmarks repository
       uses: actions/checkout@v4
 
+    - name: Check on repository
+      run: |
+        pwd
+        ls -la
+
     - name: Build Docker image
       run: |
         docker build -t zk-benchmarks-image . 
 
     - name: Run a command inside a Docker container
-      run: docker run --rm --gpus all --name zk-benchmarks -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/home/runner/zk-benchmarks -w /home/runner/zk-benchmarks  zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
+      # -w /home/runner/zk-benchmarks
+      run: docker run --rm --gpus all --name zk-benchmarks -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/home/runner/zk-benchmarks   zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
 
     - name: Benchmark Rust MSM operation
       run: |
-        # cd ./benchmarks/rust/msm
         pwd
         ls -la
         #cargo criterion --message-format=json > ./criterion.json
