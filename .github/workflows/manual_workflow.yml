@@ -23,6 +23,8 @@ jobs:
 
     - name: Build Docker image
       run: |
+        docker rm zk-benchmarks 
+        docker rmi zk-benchmarks-image
         docker build -t zk-benchmarks-image . 
 
     - name: Run a command inside a Docker container
