@@ -40,11 +40,11 @@ WORKDIR /app
 
 # Now all commands will be run as "runner"
 
-#ENV BENCHMARK_REPO=/home/runner/icicle/
+ENV BENCHMARK_REPO=/app/icicle/
 
 # Install Rust
-#RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-#ENV PATH="/home/runner/.cargo/bin:${PATH}"
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+ENV PATH="/root/.cargo/bin:${PATH}"
 # extend cargo with command criterion and enable export from criterion to json
 #RUN cargo install cargo-criterion
 
