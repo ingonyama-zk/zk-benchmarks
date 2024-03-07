@@ -55,12 +55,9 @@ fn benchmark1(c: &mut Criterion) {
     group.sample_size(10);
 
     // let sizes = [1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864, 268435456, 1073741824];
-    let sizes = [65536];
-    group.measurement_time(std::time::Duration::from_secs(158));
+    let sizes = [1024, 4096 ];
     for &size in &sizes {
-        // group.throughput(Throughput::Bytes(*size as u64));
         group.sample_size(10);
-        group.measurement_time(std::time::Duration::from_secs(158));
         group.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, &size| {
             b.iter_batched_ref(
                 || {  
@@ -84,7 +81,7 @@ fn benchmark2(c: &mut Criterion) {
     group.sample_size(10);
     
     // let sizes = [1024, 4096, 16384, 65536, 262144, 1048576, 4194304, 16777216, 67108864, 268435456, 1073741824];
-    let sizes = [65536];
+    let sizes = [1024, 4096 ];
 
     for &size in &sizes {
         group.bench_with_input(BenchmarkId::from_parameter(size), &size, |b, &size| {
