@@ -20,6 +20,9 @@ jobs:
       run: |
         docker build -t zk-benchmarks-image . 
 
+    - name: Run a command inside a Docker container
+      run: docker run --rm zk-benchmarks-image:latest ls -la
+
     - name: Benchmark Rust MSM operation
       run: |
         # cd ./benchmarks/rust/msm
