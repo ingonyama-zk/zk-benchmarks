@@ -13,13 +13,13 @@ jobs:
 
     steps:
     
-    - name: Checkout zk-benchmarks repository
-      uses: actions/checkout@v4
+    # - name: Checkout zk-benchmarks repository
+    #   uses: actions/checkout@v4
 
-    - name: Check on repository
-      run: |
-        pwd
-        ls -la
+    # - name: Check on repository
+    #   run: |
+    #     pwd
+    #     ls -la
 
     - name: Build Docker image
       run: |
