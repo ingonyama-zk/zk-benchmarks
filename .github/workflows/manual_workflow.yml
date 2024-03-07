@@ -28,8 +28,8 @@ jobs:
         docker build -t zk-benchmarks-image . 
 
     - name: Run a command inside a Docker container
-      # -w /home/runner/zk-benchmarks
-      run: docker run --rm --gpus all --name zk-benchmarks -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/app/zk-benchmarks --user $(id -u):$(id -g) -w /app/zk-benchmarks zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
+      #run: docker run --rm --gpus all --name zk-benchmarks -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/app/zk-benchmarks --user $(id -u):$(id -g) -w /app/zk-benchmarks zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
+      run: docker run --rm --gpus all --name zk-benchmarks -v .:/app/zk-benchmarks --user $(id -u):$(id -g) -w /app/zk-benchmarks zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
 
     - name: Benchmark Rust MSM operation
       run: |
