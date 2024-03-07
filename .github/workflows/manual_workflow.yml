@@ -13,8 +13,9 @@ jobs:
 
     steps:
     
-    # - name: Checkout zk-benchmarks repository
-    #   uses: actions/checkout@v4
+    # I need only the Dockerfile to build the image
+    - name: Checkout zk-benchmarks repository
+      uses: actions/checkout@v4
 
     - name: Build Docker image
       run: |
