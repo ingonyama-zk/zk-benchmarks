@@ -29,7 +29,7 @@ jobs:
 
     - name: Run a command inside a Docker container
       # -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/app/zk-benchmarks -w /app/zk-benchmarks
-      run: docker run --rm --gpus all --name zk-benchmarks  --user $(id -u):$(id -g) zk-benchmarks-image:latest /bin/bash -c "pwd && ls -la"
+      run: docker run --rm --gpus all --name zk-benchmarks  --user $(id -u):$(id -g) zk-benchmarks-image:latest /bin/bash -c "pwd && ls /app && ls /app/zk-benchmarks && ls /app/icicle"
       # run: |
       #   echo "$(id -u):$(id -g) $(whoami) $(pwd) $(ls -la)"
       #   docker run --rm -v "$(pwd)":/app/dir alpine ls -la /app/dir

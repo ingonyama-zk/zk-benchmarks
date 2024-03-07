@@ -51,6 +51,9 @@ WORKDIR /app
 RUN git clone https://github.com/ingonyama-zk/icicle.git  /app/icicle
 # RUN cd /home/runner/icicle/wrappers/rust && cargo build 
 
+# clone https://github.com/ingonyama-zk/zk-benchmarks, branch CI-initial to /app/zk-benchmarks
+RUN git clone -b CI-initial https://github.com/ingonyama-zk/zk-benchmarks /app/zk-benchmarks
+
 # Set the entry point
 #WORKDIR /home/runner
 #CMD ["/bin/bash"]
