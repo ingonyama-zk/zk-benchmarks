@@ -23,19 +23,19 @@ jobs:
         docker rmi zk-benchmarks-image || true
         docker build -t zk-benchmarks-image . 
 
-    - name: Run a command inside a Docker container
+    - name: Run Rust benchmarks inside a Docker container
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      # -v /home/docker/actions-runner/_work/zk-benchmarks/zk-benchmarks:/app/zk-benchmarks --user $(id -u):$(id -g)
-      run: docker run --rm -e DATABASE_URL="${DATABASE_URL}" --gpus all --name zk-benchmarks -w /app/zk-benchmarks  zk-benchmarks-image:latest /bin/bash -c "cd /app/zk-benchmarks/benchmarks/rust/msm && cargo bench"
+      #run: docker run --rm -e DATABASE_URL="${DATABASE_URL}" --gpus all --name zk-benchmarks -w /app/zk-benchmarks  zk-benchmarks-image:latest /bin/bash -c "cd /app/zk-benchmarks/benchmarks/rust/msm && cargo bench"
+      run: docker run --rm -e BENCHMARK_REPO=/app/icicle -e DATABASE_URL="${DATABASE_URL}" --gpus all --name zk-benchmarks -w /app/zk-benchmarks  zk-benchmarks-image:latest /bin/bash -c "cd /app/zk-benchmarks/zkbench && cargo run"
 
-    - name: Benchmark Rust MSM operation
-      run: |
-        pwd
-        ls -la
-        #cargo criterion --message-format=json > ./criterion.json
-        docker images
-        #docker run --gpus all zk-benchmarks-image:latest
+    # - name: Benchmark Rust MSM operation
+    #   run: |
+    #     pwd
+    #     ls -la
+    #     #cargo criterion --message-format=json > ./criterion.json
+    #     docker images
+    #     #docker run --gpus all zk-benchmarks-image:latest
         
 
     # - name: Benchmark add operation

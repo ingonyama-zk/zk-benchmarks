@@ -65,10 +65,11 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     println!("Repository path: {}", repository_path);
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     println!("Database URL: {}", database_url);
-
-    // let id = zkbench::git_id(&repository_path);
-    // println!("Current commit hash: {}", id);
-
+    
+    let id = zkbench::git_id(&repository_path);
+    println!("Current commit hash: {}", id);
+    std::process::exit(0);
+    
     let path= "../benchmarks/rust/msm";
     // let output_json = File::create("/tmp/criterion.json")?;
     // let output_json = File::create("/tmp/criterion1.json").expect("Failed to create file");
