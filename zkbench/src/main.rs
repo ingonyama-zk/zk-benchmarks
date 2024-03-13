@@ -114,8 +114,8 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
                 b.runtime_sec = Some(runtime);
                 b.comment = "junk ".to_string() + benchmark_group;
                 println!("{:#?}", b);
-                // let msm_id = zkbench::add_msm(&pool, b).await;
-                // println!("Added new msm with id {:?}", msm_id);
+                let msm_id = zkbench::add_msm(&pool, b).await;
+                println!("Added new msm with id {:?}", msm_id);
                 nof_benchmark += 1;
             }
             Ok(DataTypes::G(group)) => {
