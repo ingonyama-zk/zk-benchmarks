@@ -68,7 +68,7 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     
     // let id = zkbench::git_id(&repository_path);
     // println!("Current commit hash: {}", id);
-    std::process::exit(1);
+    // std::process::exit(1);
 
     // let path= "../benchmarks/rust/msm";
     // let output_json = File::create("/tmp/criterion.json")?;
