@@ -21,6 +21,7 @@ jobs:
       run: |
         docker rm zk-benchmarks || true
         docker rmi zk-benchmarks-image || true
+        docker system prune -a --force --volumes
         docker build -t zk-benchmarks-image . 
 
     - name: Run Rust benchmarks inside a Docker container
