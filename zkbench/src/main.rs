@@ -88,9 +88,6 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let metadata_file = File::open(metadata_path)?;
     let metadata: Vec<MsmBenchmark> = serde_json::from_reader(metadata_file)?;
     println!("{:#?}", metadata[0]);
-    // let metadata_json = fs::read_to_string(metadata_path).expect("Failed to read the file");
-    // // let mut meta: MsmBenchmark = serde_json::from_str(&metadata_json.to_string()).expect("Deserialization failed");
-    // // println!("Metadata {:?}",meta);
     let connect_result = PgPool::connect(&database_url).await; 
     let pool = connect_result.unwrap();
     let data_path = Path::new("/tmp/criterion.json");
