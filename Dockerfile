@@ -46,7 +46,7 @@ ENV BENCHMARK_REPO=/app/icicle/
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 # extend cargo with command criterion and enable export from criterion to json
-#RUN cargo install cargo-criterion
+RUN cargo install cargo-criterion
 
 RUN git clone https://github.com/ingonyama-zk/icicle.git  /app/icicle
 # RUN cd /home/runner/icicle/wrappers/rust && cargo build 
