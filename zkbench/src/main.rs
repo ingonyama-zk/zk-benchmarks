@@ -70,18 +70,18 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     println!("Current commit hash: {}", id);
     // std::process::exit(1);
 
-    // let path= "../benchmarks/rust/msm";
-    // let output_json = File::create("/tmp/criterion.json")?;
-    // let output_json = File::create("/tmp/criterion1.json").expect("Failed to create file");
-    // let mut child  = Command::new("cargo")
-    //     .arg("criterion")
-    //     .arg("--message-format")
-    //     .arg("json")
-    //     .current_dir(path)
-    //     .stdout(Stdio::from(output_json))
-    //     .spawn()?;
-    // // Wait for the command to complete
-    // let _result = child.wait()?;
+    let path= "../benchmarks/rust/msm";
+    let output_json = File::create("/tmp/criterion.json")?;
+    let output_json = File::create("/tmp/criterion1.json").expect("Failed to create file");
+    let mut child  = Command::new("cargo")
+        .arg("criterion")
+        .arg("--message-format")
+        .arg("json")
+        .current_dir(path)
+        .stdout(Stdio::from(output_json))
+        .spawn()?;
+    // Wait for the command to complete
+    let _result = child.wait()?;
 
     // let metadata_path = "../benchmarks/rust/msm/metadata.json";
     // // read metadata json into a vector of MsmBenchmark
