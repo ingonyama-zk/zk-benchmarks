@@ -68,9 +68,9 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     
     // let id = zkbench::git_id(&repository_path);
     // println!("Current commit hash: {}", id);
-    std::process::exit(0);
+    std::process::exit(1);
 
-    let path= "../benchmarks/rust/msm";
+    // let path= "../benchmarks/rust/msm";
     // let output_json = File::create("/tmp/criterion.json")?;
     // let output_json = File::create("/tmp/criterion1.json").expect("Failed to create file");
     // let mut child  = Command::new("cargo")
@@ -83,51 +83,51 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     // // Wait for the command to complete
     // let _result = child.wait()?;
 
-    let metadata_path = "../benchmarks/rust/msm/metadata.json";
-    // read metadata json into a vector of MsmBenchmark
-    let metadata_file = File::open(metadata_path)?;
-    let metadata: Vec<MsmBenchmark> = serde_json::from_reader(metadata_file)?;
-    println!("{:#?}", metadata[0]);
-    // let metadata_json = fs::read_to_string(metadata_path).expect("Failed to read the file");
-    // let mut meta: MsmBenchmark = serde_json::from_str(&metadata_json.to_string()).expect("Deserialization failed");
-    // println!("Metadata {:?}",meta);
-    let connect_result = PgPool::connect(&database_url).await; 
-    let pool = connect_result.unwrap();
-    let data_path = Path::new("../benchmarks/rust/msm/criterion.json");
-    let data_file = File::open(&data_path)?; 
-    let reader = io::BufReader::new(data_file);
-    let mut nof_group : usize = 0;
-    let mut nof_benchmark: i32 = 0;
-    for line in reader.lines() {
-        let line = line?;
-        let obj: Result<DataTypes> = from_str(&line);
-        match obj {
-            Ok(DataTypes::P(performance)) => {
-                println!("Group {:?} Benchmark {:?}", nof_group, nof_benchmark);
-                let id_parts: Vec<&str> = performance.benchmark_id.split('/').collect();
-                let benchmark_group: &str = id_parts[0];
-                let vector_size: i64 = id_parts[1].parse().unwrap();
-                let runtime = normalize_runtime(performance.typical);
-                // println!("Comment {:#?} vector {:#?} runtime_sec {:#?}", benchmark_group, vector_size, runtime);
-                let mut b = metadata[nof_group].clone();
-                b.vector_size = vector_size;
-                b.runtime_sec = Some(runtime);
-                b.comment = "junk ".to_string() + benchmark_group;
-                println!("{:#?}", b);
-                let msm_id = zkbench::add_msm(&pool, b).await;
-                println!("Added new msm with id {:?}", msm_id);
-                nof_benchmark += 1;
-            }
-            Ok(DataTypes::G(group)) => {
-                nof_group += 1;
-                nof_benchmark = 0;
-                // println!("Moving to next group: {:?}", nof_group);
-            }
-            Err(e) => {
-                eprintln!("Error deserializing Performance: {}", e);
-            }
-        }
-    }
-    pool.close().await;
+    // let metadata_path = "../benchmarks/rust/msm/metadata.json";
+    // // read metadata json into a vector of MsmBenchmark
+    // let metadata_file = File::open(metadata_path)?;
+    // let metadata: Vec<MsmBenchmark> = serde_json::from_reader(metadata_file)?;
+    // println!("{:#?}", metadata[0]);
+    // // let metadata_json = fs::read_to_string(metadata_path).expect("Failed to read the file");
+    // // let mut meta: MsmBenchmark = serde_json::from_str(&metadata_json.to_string()).expect("Deserialization failed");
+    // // println!("Metadata {:?}",meta);
+    // let connect_result = PgPool::connect(&database_url).await; 
+    // let pool = connect_result.unwrap();
+    // let data_path = Path::new("../benchmarks/rust/msm/criterion.json");
+    // let data_file = File::open(&data_path)?; 
+    // let reader = io::BufReader::new(data_file);
+    // let mut nof_group : usize = 0;
+    // let mut nof_benchmark: i32 = 0;
+    // for line in reader.lines() {
+    //     let line = line?;
+    //     let obj: Result<DataTypes> = from_str(&line);
+    //     match obj {
+    //         Ok(DataTypes::P(performance)) => {
+    //             println!("Group {:?} Benchmark {:?}", nof_group, nof_benchmark);
+    //             let id_parts: Vec<&str> = performance.benchmark_id.split('/').collect();
+    //             let benchmark_group: &str = id_parts[0];
+    //             let vector_size: i64 = id_parts[1].parse().unwrap();
+    //             let runtime = normalize_runtime(performance.typical);
+    //             // println!("Comment {:#?} vector {:#?} runtime_sec {:#?}", benchmark_group, vector_size, runtime);
+    //             let mut b = metadata[nof_group].clone();
+    //             b.vector_size = vector_size;
+    //             b.runtime_sec = Some(runtime);
+    //             b.comment = "junk ".to_string() + benchmark_group;
+    //             println!("{:#?}", b);
+    //             let msm_id = zkbench::add_msm(&pool, b).await;
+    //             println!("Added new msm with id {:?}", msm_id);
+    //             nof_benchmark += 1;
+    //         }
+    //         Ok(DataTypes::G(group)) => {
+    //             nof_group += 1;
+    //             nof_benchmark = 0;
+    //             // println!("Moving to next group: {:?}", nof_group);
+    //         }
+    //         Err(e) => {
+    //             eprintln!("Error deserializing Performance: {}", e);
+    //         }
+    //     }
+    // }
+    // pool.close().await;
     Ok(())
 }
